@@ -27,7 +27,7 @@
     "test:ui": "vitest --ui --coverage"
   },
   "publishConfig": {
-    "provenance": true
+    "access": "public"
   },
   "repository": {
     "type": "git",
