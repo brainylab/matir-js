@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.1.1
+
+### Patch Changes
+
+- [`7dd200b`](https://github.com/brainylab/matir-js/commit/7dd200b57d146325a1f6851a95a0584f1a4f80e9) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - fix: export types from package
+
 ## 0.1.0
 
 ### Minor Changes
