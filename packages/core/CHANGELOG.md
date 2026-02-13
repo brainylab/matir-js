@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.1.2
+
+### Patch Changes
+
+- [`d750085`](https://github.com/brainylab/matir-js/commit/d750085ca6f25468180e25d4eec8e17d553d5562) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - fix: ajustes no types do projeto
+
 ## 0.1.1
 
 ### Patch Changes
