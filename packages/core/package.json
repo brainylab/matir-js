@@ -22,7 +22,7 @@
     "prepack": "clean-package",
     "postpack": "clean-package restore",
     "build": "tsdown",
-    "test": "vitest",
+    "test": "vitest run",
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui --coverage"
   },
