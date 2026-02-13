@@ -26,6 +26,9 @@
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui --coverage"
   },
+  "publishConfig": {
+    "provenance": true
+  },
   "keywords": [],
   "author": "andrefelipeschulle",
   "license": "MIT",
