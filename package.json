@@ -1,6 +1,10 @@
 {
   "name": "matir-js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brainylab/matir"
+  },
   "scripts": {
     "build": "turbo run build",
     "release": "changeset publish",
