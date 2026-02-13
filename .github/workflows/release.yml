@@ -44,7 +44,7 @@ jobs:
       # - name: github package registry authentication
       #   run: npm set //npm.pkg.github.com/:_authToken=${{ secrets.GHP_PACKAGES_TOKEN }}
 
-      - name: create release pull request or publish to GRP
+      - name: create release pull request or publish to NPM
         id: changesets
         uses: changesets/action@v1
         with:

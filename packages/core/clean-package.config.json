@@ -8,14 +8,14 @@
     "clean-package"
   ],
   "replace": {
-    "main": "dist/index.js",
+    "main": "dist/index.mjs",
     "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
+    "types": "dist/index.d.mts",
     "exports": {
       ".": {
-        "types": "./dist/index.d.ts",
+        "types": "./dist/index.d.mts",
         "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
+        "require": "./dist/index.mjs"
       },
       "./package.json": "./package.json"
     }
