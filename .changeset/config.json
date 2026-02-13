@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.2/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "matir-js/core" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "brainylab/matir" }],
   "commit": false,
   "fixed": [],
   "linked": [],
