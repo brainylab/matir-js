@@ -1,5 +1,5 @@
 {
-  "name": "matir",
+  "name": "matir-js",
   "private": true,
   "scripts": {
     "build": "turbo run build",
