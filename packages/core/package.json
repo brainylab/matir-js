@@ -29,6 +29,10 @@
   "publishConfig": {
     "provenance": true
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brainylab/matir"
+  },
   "keywords": [],
   "author": "andrefelipeschulle",
   "license": "MIT",
