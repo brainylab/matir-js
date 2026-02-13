@@ -21,7 +21,6 @@
     "changeset": "changeset",
     "prepack": "clean-package",
     "postpack": "clean-package restore",
-    "release": "changeset publish",
     "build": "tsdown",
     "test": "vitest",
     "test:watch": "vitest --watch",
