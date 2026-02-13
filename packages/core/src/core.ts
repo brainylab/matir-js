@@ -225,19 +225,7 @@ export class MatirCore<T extends MatirPermissions, TContext = unknown> {
 
   static createSchema<T extends MatirPermissions, TContext = unknown>(
     schema: T,
-  ): {
-    ability: {
-      can: typeof instance.can;
-      cannot: typeof instance.cannot;
-    };
-    current: {
-      role: typeof instance.setRole;
-      roles: typeof instance.setRoles;
-      permissions: typeof instance.setPermissions;
-      clear: typeof instance.clearCurrent;
-      get: typeof instance.getCurrent;
-    };
-  } {
+  ) {
     const instance = new MatirCore<T, TContext>(schema);
 
     const ability = {

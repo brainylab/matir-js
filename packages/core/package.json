@@ -3,11 +3,21 @@
   "version": "0.0.1",
   "description": "",
   "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "changeset": "changeset",
     "prepack": "clean-package",
     "postpack": "clean-package restore",
     "release": "changeset publish",
+    "build": "tsdown",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui --coverage"
