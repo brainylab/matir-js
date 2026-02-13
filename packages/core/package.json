@@ -1,0 +1,29 @@
+{
+  "name": "@matir/core",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "changeset": "changeset",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore",
+    "release": "changeset publish",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui --coverage"
+  },
+  "keywords": [],
+  "author": "andrefelipeschulle",
+  "license": "MIT",
+  "packageManager": "pnpm@10.25.0",
+  "devDependencies": {
+    "@types/node": "25.2.3",
+    "@vitest/coverage-v8": "4.0.18",
+    "@vitest/ui": "4.0.18",
+    "clean-package": "2.2.0",
+    "tsdown": "0.20.3",
+    "tsx": "4.21.0",
+    "typescript": "5.9.2",
+    "vitest": "4.0.18"
+  }
+}
