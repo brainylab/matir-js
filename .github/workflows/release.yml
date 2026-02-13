@@ -6,7 +6,7 @@ on:
     #   - '.changeset/**'
     #   - 'packages/**'
     branches:
-      - beta
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
