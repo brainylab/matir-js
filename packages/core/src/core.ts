@@ -1,7 +1,9 @@
 import type {
   ExtractActionsFromSubject,
+  ExtractConditionsFromSubject,
   ExtractSubjects,
-  MatirCondition,
+  HasConditions,
+  MatirConditions,
   MatirPermissions,
   MatirRole,
   MatirUserPermissions,
@@ -40,25 +42,55 @@ export class MatirCore<T extends MatirPermissions, TContext = unknown> {
     this.currentPermissions = {};
   }
 
-  /**
-   * Verifica se o usuário tem permissão para acessar um subject com uma action específica
-   *
-   * Fluxo de validação:
-   * 1. Busca o subject no schema
-   * 2. Verifica se o usuário tem uma das roles permitidas (setCurrent)
-   * 3. Verifica se a action está nas actions permitidas do subject
-   * 4. Verifica conditions se fornecidas
-   *
-   * @param subject - O recurso a ser verificado
-   * @param action - A ação a ser realizada no subject
-   * @param condition - Condição adicional (objeto ou função)
-   * @param context - Contexto para avaliação da condition (se for função)
-   */
-  can<S extends ExtractSubjects<T>>(
+  // Sobrecarga 1: condition é FUNÇÃO com action → context é OBRIGATÓRIO e tipo é INFERIDO
+  can<S extends ExtractSubjects<T>, C>(
     subject: S,
-    action?: ExtractActionsFromSubject<T, S>,
-    condition?: MatirCondition<TContext>,
+    action: ExtractActionsFromSubject<T, S>,
+    condition: (context: C) => boolean,
+    context: C,
+  ): boolean;
+
+  // Sobrecarga 2: condition é FUNÇÃO sem action → context é OBRIGATÓRIO e tipo é INFERIDO
+  can<S extends ExtractSubjects<T>, C>(
+    subject: S,
+    action: undefined,
+    condition: (context: C) => boolean,
+    context: C,
+  ): boolean;
+
+  // Sobrecarga 3: subject COM conditions + COM action + condition OBRIGATÓRIA (objeto tipado)
+  can<S extends ExtractSubjects<T>>(
+    subject: HasConditions<T, S> extends true ? S : never,
+    action: ExtractActionsFromSubject<T, S>,
+    condition: Partial<ExtractConditionsFromSubject<T, S>>,
     context?: TContext,
+  ): boolean;
+
+  // Sobrecarga 4: subject COM conditions + SEM action + condition OBRIGATÓRIA (objeto tipado)
+  can<S extends ExtractSubjects<T>>(
+    subject: HasConditions<T, S> extends true ? S : never,
+    action: undefined,
+    condition: Partial<ExtractConditionsFromSubject<T, S>>,
+    context?: TContext,
+  ): boolean;
+
+  // Sobrecarga 5: subject SEM conditions
+  can<S extends ExtractSubjects<T>>(
+    subject: HasConditions<T, S> extends false ? S : never,
+    action?: ExtractActionsFromSubject<T, S>,
+    condition?: Record<string, MatirConditions>,
+    context?: TContext,
+  ): boolean;
+
+  // Implementação
+  can<S extends ExtractSubjects<T>, C = any>(
+    subject: S,
+    action: ExtractActionsFromSubject<T, S> | undefined,
+    condition?:
+      | Partial<ExtractConditionsFromSubject<T, S>>
+      | Record<string, MatirConditions>
+      | ((context: C) => boolean),
+    context?: TContext | C,
   ): boolean {
     // 1. Busca a permissão do subject no schema
     const permission = this.schema.get(subject as string);
@@ -98,13 +130,20 @@ export class MatirCore<T extends MatirPermissions, TContext = unknown> {
 
     //  revisar condition
 
+    // Se o subject tem conditions no schema, condition é obrigatória
+    if (
+      permission.conditions &&
+      Object.keys(permission.conditions).length > 0
+    ) {
+      if (condition === undefined) {
+        return false;
+      }
+    }
+
     if (condition !== undefined) {
       // Condition como função
       if (typeof condition === "function") {
-        if (!context) {
-          return false;
-        }
-        const conditionResult = condition(context);
+        const conditionResult = condition(context as any);
         if (!conditionResult) {
           return false;
         }
@@ -131,13 +170,57 @@ export class MatirCore<T extends MatirPermissions, TContext = unknown> {
   /**
    * Verifica se o usuário NÃO tem permissão
    */
-  cannot<S extends ExtractSubjects<T>>(
+  // Sobrecarga 1: condition é FUNÇÃO com action → context é OBRIGATÓRIO e tipo é INFERIDO
+  cannot<S extends ExtractSubjects<T>, C>(
     subject: S,
     action: ExtractActionsFromSubject<T, S>,
-    condition?: MatirCondition<TContext>,
+    condition: (context: C) => boolean,
+    context: C,
+  ): boolean;
+
+  // Sobrecarga 2: condition é FUNÇÃO sem action → context é OBRIGATÓRIO e tipo é INFERIDO
+  cannot<S extends ExtractSubjects<T>, C>(
+    subject: S,
+    action: undefined,
+    condition: (context: C) => boolean,
+    context: C,
+  ): boolean;
+
+  // Sobrecarga 3: subject COM conditions + COM action + condition OBRIGATÓRIA (objeto tipado)
+  cannot<S extends ExtractSubjects<T>>(
+    subject: HasConditions<T, S> extends true ? S : never,
+    action: ExtractActionsFromSubject<T, S>,
+    condition: Partial<ExtractConditionsFromSubject<T, S>>,
     context?: TContext,
+  ): boolean;
+
+  // Sobrecarga 4: subject COM conditions + SEM action + condition OBRIGATÓRIA (objeto tipado)
+  cannot<S extends ExtractSubjects<T>>(
+    subject: HasConditions<T, S> extends true ? S : never,
+    action: undefined,
+    condition: Partial<ExtractConditionsFromSubject<T, S>>,
+    context?: TContext,
+  ): boolean;
+
+  // Sobrecarga 5: subject SEM conditions
+  cannot<S extends ExtractSubjects<T>>(
+    subject: HasConditions<T, S> extends false ? S : never,
+    action?: ExtractActionsFromSubject<T, S>,
+    condition?: Record<string, MatirConditions>,
+    context?: TContext,
+  ): boolean;
+
+  // Implementação - precisa ser compatível com TODAS as sobrecargas
+  cannot<S extends ExtractSubjects<T>, C = any>(
+    subject: S,
+    action: ExtractActionsFromSubject<T, S> | undefined,
+    condition?:
+      | Partial<ExtractConditionsFromSubject<T, S>>
+      | Record<string, MatirConditions>
+      | ((context: C) => boolean),
+    context?: TContext | C,
   ): boolean {
-    return !this.can(subject, action, condition, context);
+    return !this.can(subject, action as any, condition as any, context as any);
   }
 
   static createSchema<T extends MatirPermissions, TContext = unknown>(

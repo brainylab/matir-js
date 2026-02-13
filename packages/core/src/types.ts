@@ -16,9 +16,11 @@ export type MatirAction = MatirActionMap[keyof MatirActionMap];
 
 export type MatirSubject = string;
 
+export type MatirConditions = string | number | boolean;
+
 // Condition pode ser valor estático ou função com contexto
 export type MatirCondition<TContext = unknown> =
-  | Record<string, boolean>
+  | Record<string, MatirConditions>
   | ((context: TContext) => boolean);
 
 export type MatirPermission = {
@@ -26,7 +28,7 @@ export type MatirPermission = {
   reasons?: string;
   roles?: MatirRole[];
   actions?: MatirAction[];
-  conditions?: Record<string, boolean>;
+  conditions?: Record<string, MatirConditions>;
 };
 
 export type MatirPermissions = {
@@ -75,3 +77,49 @@ export type ExtractActionsFromSubject<
     ? Action
     : never
   : MatirAction;
+
+// Normaliza tipos literais para seus tipos base
+// true | false → boolean
+// 123 → number
+// "hello" → string
+type NormalizeValue<T> = T extends boolean
+  ? boolean
+  : T extends number
+    ? number
+    : T extends string
+      ? string
+      : T;
+
+// Normaliza um objeto de conditions, convertendo literais para tipos base
+type NormalizeConditions<T> = {
+  [K in keyof T]: NormalizeValue<T[K]>;
+};
+
+// Verifica se um subject tem conditions definidas
+export type HasConditions<
+  T extends MatirPermissions,
+  Subject extends ExtractSubjects<T>,
+> = GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
+  ? Conditions extends Record<string, MatirConditions>
+    ? true
+    : false
+  : false;
+
+// Extrai as conditions de um subject específico (com tipos normalizados)
+export type ExtractConditionsFromSubject<
+  T extends MatirPermissions,
+  Subject extends ExtractSubjects<T>,
+> = GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
+  ? Conditions extends Record<string, MatirConditions>
+    ? NormalizeConditions<Conditions>
+    : never
+  : never;
+
+// Tipo para o parâmetro condition baseado no schema
+export type ExtractConditionType<
+  T extends MatirPermissions,
+  Subject extends ExtractSubjects<T>,
+  TContext = unknown,
+> = HasConditions<T, Subject> extends true
+  ? ExtractConditionsFromSubject<T, Subject> | ((context: TContext) => boolean)
+  : MatirCondition<TContext>;
