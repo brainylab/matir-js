@@ -7,4 +7,4 @@ const matir = MatirCore as typeof MatirCore & {
 
 matir.defineSchema = defineSchema;
 
-export { matir };
+export { matir, defineSchema };
