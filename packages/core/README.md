@@ -12,7 +12,7 @@
 [Características](#-características) •
 [Exemplos](#-exemplos) •
 [API](#-api) •
-[Tipos Personalizados](#-tipos-personalizados)
+[Conversão de Schema](#-conversão-de-schema)
 
 </div>
 
@@ -26,12 +26,13 @@
 
 - 🎯 **100% Type-Safe** - Autocomplete inteligente e validação em tempo de compilação
 - 🔄 **Schemas Aninhados** - Suporte para permissões hierárquicas (`order.export`)
-- 🎭 **Roles & Actions** - Sistema flexível de papéis e ações
+- 🎭 **Roles & Actions Dinâmicos** - Defina seus próprios roles e actions no schema
 - 🔍 **Conditions** - Condições estáticas e dinâmicas com contexto
 - 🚀 **Zero Config** - Funciona out-of-the-box
 - 📦 **Leve** - Sem dependências externas
-- 🧩 **Extensível** - Adicione seus próprios tipos de roles e actions
+- 🧩 **Extensível** - Roles e actions são inferidos do schema
 - ⚡ **Performance** - Sistema de cache interno para consultas rápidas
+- 🔄 **Conversão de Schema** - Converta schemas para array para APIs/Database
 
 ## 📦 Instalação
 
@@ -51,15 +52,19 @@ pnpm add @matir/core
 ```typescript
 import { matir } from '@matir/core';
 
-// 1. Defina o schema de permissões
+// 1. Defina o schema de permissões com roles, actions e rules
 const schema = matir.defineSchema({
-  order: {
-    roles: ['admin', 'super_admin'],
-    actions: ['create', 'read', 'update', 'delete'],
-  },
-  invoice: {
-    roles: ['admin'],
-    actions: ['read'],
+  roles: ['admin', 'editor', 'viewer'] as const,
+  actions: ['create', 'read', 'update', 'delete'] as const,
+  rules: {
+    order: {
+      roles: ['admin', 'editor'],
+      actions: ['create', 'read', 'update', 'delete'],
+    },
+    invoice: {
+      roles: ['admin'],
+      actions: ['read'],
+    },
   },
 });
 
@@ -81,45 +86,65 @@ ability.cannot('order', 'delete'); // ✅ true
 
 ## 📚 Exemplos
 
-### 🎭 Roles Básicas
+### 🎭 Roles e Actions Básicas
 
 ```typescript
-const { ability, current } = matir.createSchema({
-  post: {
-    roles: ['editor', 'admin'],
-    actions: ['create', 'read', 'update', 'delete'],
+const schema = matir.defineSchema({
+  roles: ['editor', 'admin', 'viewer'] as const,
+  actions: ['create', 'read', 'update', 'delete', 'publish'] as const,
+  rules: {
+    post: {
+      roles: ['editor', 'admin'],
+      actions: ['create', 'read', 'update', 'delete', 'publish'],
+    },
+    comment: {
+      roles: ['viewer', 'editor', 'admin'],
+      actions: ['read', 'create'],
+    },
   },
 });
 
+const { ability, current } = matir.createSchema(schema);
+
 // Definir role do usuário
 current.role('editor');
-current.permissions({ post: ['read', 'create'] });
+current.permissions({ 
+  post: ['read', 'create', 'update'],
+  comment: ['read', 'create'],
+});
 
 // Verificar permissões
 ability.can('post');              // ✅ true - tem a role 'editor'
 ability.can('post', 'create');    // ✅ true - tem a action 'create'
 ability.can('post', 'delete');    // ❌ false - não tem a action 'delete'
+ability.can('comment', 'read');   // ✅ true - tem a action 'read'
 ```
 
 ### 🔄 Schemas Aninhados
 
 ```typescript
-const { ability, current } = matir.createSchema({
-  order: {
-    roles: ['admin'],
-    actions: ['read', 'create'],
-    sub: {
-      export: {
-        roles: ['admin', 'super_admin'],
-        actions: ['create'],
-      },
-      report: {
-        roles: ['admin'],
-        actions: ['read'],
+const schema = matir.defineSchema({
+  roles: ['admin', 'super_admin', 'manager'] as const,
+  actions: ['create', 'read', 'update', 'delete'] as const,
+  rules: {
+    order: {
+      roles: ['admin', 'manager'],
+      actions: ['read', 'create', 'update'],
+      sub: {
+        export: {
+          roles: ['admin', 'super_admin'],
+          actions: ['create'],
+        },
+        report: {
+          roles: ['admin', 'manager'],
+          actions: ['read'],
+        },
       },
     },
   },
 });
+
+const { ability, current } = matir.createSchema(schema);
 
 current.role('admin');
 current.permissions({
@@ -137,16 +162,22 @@ ability.can('order.report', 'read');   // ✅ true
 ### 🔍 Conditions Estáticas
 
 ```typescript
-const { ability, current } = matir.createSchema({
-  document: {
-    roles: ['editor'],
-    actions: ['read', 'update'],
-    conditions: {
-      status: 'draft',
-      department: 'engineering',
+const schema = matir.defineSchema({
+  roles: ['editor', 'admin'] as const,
+  actions: ['read', 'update', 'delete'] as const,
+  rules: {
+    document: {
+      roles: ['editor'],
+      actions: ['read', 'update'],
+      conditions: {
+        status: 'draft',
+        department: 'engineering',
+      },
     },
   },
 });
+
+const { ability, current } = matir.createSchema(schema);
 
 current.role('editor');
 current.permissions({ document: ['read', 'update'] });
@@ -163,12 +194,18 @@ ability.can('document', 'read', { department: 'sales' });          // ❌ false
 ### 🎯 Conditions Dinâmicas
 
 ```typescript
-const { ability, current } = matir.createSchema({
-  profile: {
-    roles: ['user'],
-    actions: ['read', 'update'],
+const schema = matir.defineSchema({
+  roles: ['user', 'admin'] as const,
+  actions: ['read', 'update', 'delete'] as const,
+  rules: {
+    profile: {
+      roles: ['user'],
+      actions: ['read', 'update'],
+    },
   },
 });
+
+const { ability, current } = matir.createSchema(schema);
 
 current.role('user');
 current.permissions({ profile: ['read', 'update'] });
@@ -198,12 +235,18 @@ ability.can(
 ### 🎪 Múltiplas Roles
 
 ```typescript
-const { ability, current } = matir.createSchema({
-  settings: {
-    roles: ['admin', 'moderator'],
-    actions: ['read', 'update'],
+const schema = matir.defineSchema({
+  roles: ['user', 'admin', 'moderator', 'super_admin'] as const,
+  actions: ['read', 'update', 'delete'] as const,
+  rules: {
+    settings: {
+      roles: ['admin', 'moderator'],
+      actions: ['read', 'update'],
+    },
   },
 });
+
+const { ability, current } = matir.createSchema(schema);
 
 // Definir múltiplas roles
 current.roles(['user', 'moderator']);
@@ -220,28 +263,34 @@ current.role('admin');
 ### 🔒 Cenário Complexo
 
 ```typescript
-const { ability, current } = matir.createSchema({
-  project: {
-    roles: ['admin', 'member'],
-    actions: ['read', 'update', 'delete'],
-    conditions: {
-      archived: false,
-    },
-    sub: {
-      task: {
-        roles: ['member', 'contributor'],
-        actions: ['create', 'read', 'update'],
-        conditions: {
-          locked: false,
-        },
+const schema = matir.defineSchema({
+  roles: ['admin', 'member', 'contributor', 'viewer'] as const,
+  actions: ['create', 'read', 'update', 'delete'] as const,
+  rules: {
+    project: {
+      roles: ['admin', 'member'],
+      actions: ['read', 'update', 'delete'],
+      conditions: {
+        archived: false,
       },
-      settings: {
-        roles: ['admin'],
-        actions: ['update'],
+      sub: {
+        task: {
+          roles: ['member', 'contributor'],
+          actions: ['create', 'read', 'update'],
+          conditions: {
+            locked: false,
+          },
+        },
+        settings: {
+          roles: ['admin'],
+          actions: ['update'],
+        },
       },
     },
   },
 });
+
+const { ability, current } = matir.createSchema(schema);
 
 current.roles(['member']);
 current.permissions({
@@ -266,17 +315,26 @@ ability.cannot('project.settings', 'update');             // ✅ true
 
 ### `matir.defineSchema(schema)`
 
-Define o schema de permissões com validação de tipos.
+Define o schema de permissões com validação de tipos. O schema deve conter:
+- `roles`: Array de strings com as roles disponíveis
+- `actions`: Array de strings com as actions disponíveis
+- `rules`: Objeto com as regras de permissão
 
 ```typescript
 const schema = matir.defineSchema({
-  resource: {
-    roles: ['admin'],
-    actions: ['create', 'read'],
-    conditions: { active: true },
+  roles: ['admin', 'editor', 'viewer'] as const,
+  actions: ['create', 'read', 'update', 'delete'] as const,
+  rules: {
+    resource: {
+      roles: ['admin'],
+      actions: ['create', 'read'],
+      conditions: { active: true },
+    },
   },
 });
 ```
+
+**⚠️ Importante**: Use `as const` para garantir inferência de tipos literal!
 
 ### `matir.createSchema(schema)`
 
@@ -320,7 +378,7 @@ ability.cannot('invoice', 'create');            // true se NÃO pode
 
 #### `current.role(role)`
 
-Define uma role para o usuário atual.
+Define uma role para o usuário atual. A role deve estar definida no array `roles` do schema.
 
 ```typescript
 current.role('admin');
@@ -367,92 +425,163 @@ current.get(); // { roles: [], permissions: {} }
 
 ---
 
-## 🎨 Tipos Personalizados
+## 🔄 Conversão de Schema
 
-Você pode estender os tipos padrão de `Roles` e `Actions` para adicionar seus próprios valores.
+A função `schemaToArray` converte o schema em um formato array, útil para serialização, APIs REST ou armazenamento em database.
 
-### 📝 Como Estender
-
-Crie um arquivo de declaração de tipos (ex: `src/types/matir.d.ts`):
+### `matir.schemaToArray(schema)`
 
 ```typescript
-import '@matir/core';
+import { matir } from '@matir/core';
 
-declare module '@matir/core' {
-  interface MatirRoleMap {
-    // Adicione suas roles customizadas
-    guest: 'guest';
-    moderator: 'moderator';
-    billing_admin: 'billing_admin';
-    content_creator: 'content_creator';
-  }
-
-  interface MatirActionMap {
-    // Adicione suas actions customizadas
-    publish: 'publish';
-    archive: 'archive';
-    export: 'export';
-    approve: 'approve';
-  }
-}
-```
-
-### ✅ Usando Tipos Customizados
-
-```typescript
 const schema = matir.defineSchema({
-  post: {
-    roles: ['moderator', 'content_creator'], // ✅ Autocomplete funcionando
-    actions: ['publish', 'archive'],          // ✅ Tipos customizados
-  },
-  invoice: {
-    roles: ['billing_admin'],
-    actions: ['export', 'approve'],
+  roles: ['admin', 'editor'] as const,
+  actions: ['create', 'read', 'update'] as const,
+  rules: {
+    order: {
+      roles: ['admin'],
+      actions: ['create', 'read'],
+    },
+    config: {
+      roles: ['admin', 'editor'],
+      actions: ['update'],
+      sub: {
+        export: {
+          roles: ['admin'],
+          actions: ['create'],
+        },
+      },
+    },
   },
 });
 
-const { ability, current } = matir.createSchema(schema);
+const arraySchema = matir.schemaToArray(schema);
+```
 
-current.role('moderator'); // ✅ Tipo reconhecido
-current.permissions({ post: ['publish', 'archive'] }); // ✅ Validado
+**Resultado:**
+
+```typescript
+{
+  roles: ['admin', 'editor'],
+  actions: ['create', 'read', 'update'],
+  rules: [
+    {
+      id: 'order',
+      roles: ['admin'],
+      actions: ['create', 'read'],
+    },
+    {
+      id: 'config',
+      roles: ['admin', 'editor'],
+      actions: ['update'],
+      sub: [
+        {
+          id: 'export',
+          roles: ['admin'],
+          actions: ['create'],
+        },
+      ],
+    },
+  ],
+}
+```
+
+### 📤 Exemplo de Uso com API
+
+```typescript
+// Enviar para API
+const response = await fetch('/api/permissions', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(matir.schemaToArray(schema)),
+});
+
+// Salvar no localStorage
+localStorage.setItem('permissions', JSON.stringify(matir.schemaToArray(schema)));
+
+// Enviar para database
+await db.permissions.create({
+  data: matir.schemaToArray(schema),
+});
 ```
 
 ---
 
 ## 🏗️ Schema Structure
 
+### Formato de Entrada (defineSchema)
+
 ```typescript
+type SchemaDefinition = {
+  roles: readonly string[];        // Array de roles disponíveis
+  actions: readonly string[];      // Array de actions disponíveis
+  rules: MatirPermissions;         // Regras de permissão
+};
+
 type MatirPermission = {
-  name?: string;                      // Nome descritivo
-  reasons?: string;                   // Razão da permissão
-  roles?: MatirRole[];                // Roles necessárias
-  actions?: MatirAction[];            // Actions disponíveis
-  conditions?: Record<string, any>;   // Conditions estáticas
-  sub?: MatirPermissions;             // Schemas aninhados
+  name?: string;                   // Nome descritivo
+  reasons?: string;                // Razão da permissão
+  roles?: Role[];                  // Roles necessárias (do array roles)
+  actions?: Action[];              // Actions disponíveis (do array actions)
+  conditions?: Record<string, any>; // Conditions estáticas
+  sub?: MatirPermissions;          // Schemas aninhados
+};
+```
+
+### Formato de Saída (schemaToArray)
+
+```typescript
+type SchemaArrayResult = {
+  roles: readonly string[];        // Array de roles
+  actions: readonly string[];      // Array de actions
+  rules: SchemaArrayItem[];        // Regras em formato array
+};
+
+type SchemaArrayItem = {
+  id: string;                      // Identificador do resource
+  name?: string;
+  reasons?: string;
+  roles?: string[];
+  actions?: string[];
+  conditions?: Record<string, any>;
+  sub?: SchemaArrayItem[];         // Sub-resources recursivos
 };
 ```
 
 **Exemplo completo:**
 
 ```typescript
-const schema = {
-  order: {
-    name: 'Order Management',
-    reasons: 'Control order operations',
-    roles: ['admin', 'manager'],
-    actions: ['create', 'read', 'update', 'delete'],
-    conditions: {
-      status: 'active',
-      department: 'sales',
-    },
-    sub: {
-      export: {
-        roles: ['admin'],
-        actions: ['create'],
+const schema = matir.defineSchema({
+  roles: ['admin', 'manager', 'viewer'] as const,
+  actions: ['create', 'read', 'update', 'delete'] as const,
+  rules: {
+    order: {
+      name: 'Order Management',
+      reasons: 'Control order operations',
+      roles: ['admin', 'manager'],
+      actions: ['create', 'read', 'update', 'delete'],
+      conditions: {
+        status: 'active',
+        department: 'sales',
+      },
+      sub: {
+        export: {
+          name: 'Order Export',
+          roles: ['admin'],
+          actions: ['create'],
+        },
       },
     },
   },
-};
+});
+
+// Converter para array
+const arraySchema = matir.schemaToArray(schema);
+// {
+//   roles: ['admin', 'manager', 'viewer'],
+//   actions: ['create', 'read', 'update', 'delete'],
+//   rules: [{ id: 'order', name: 'Order Management', ... }]
+// }
 ```
 
 ---
@@ -480,6 +609,49 @@ const schema = {
 - **Actions**: Verificação exata (usuário deve ter essa action)
 - **Sem actions no schema**: Permite qualquer action
 - **Sem roles no schema**: Permite qualquer role
+- **Type-Safe**: Roles e actions são inferidos do array definido no schema
+
+### 🔄 Schema Aninhado (sub)
+
+- Use **dot notation** para acessar: `'order.export'`
+- Herda contexto do parent mas tem suas próprias rules
+- Pode ter roles e actions diferentes do parent
+- Conversão para array mantém hierarquia
+
+---
+
+## 🎯 Inferência de Tipos
+
+O sistema infere automaticamente os tipos a partir do schema:
+
+```typescript
+const schema = matir.defineSchema({
+  roles: ['admin', 'editor', 'viewer'] as const,
+  actions: ['create', 'read', 'update', 'delete'] as const,
+  rules: {
+    post: {
+      roles: ['admin', 'editor'], // ✅ Autocomplete: 'admin' | 'editor' | 'viewer'
+      actions: ['create', 'read'], // ✅ Autocomplete: 'create' | 'read' | 'update' | 'delete'
+    },
+  },
+});
+
+const { ability, current } = matir.createSchema(schema);
+
+// ✅ TypeScript sabe quais roles existem
+current.role('admin');    // OK
+current.role('invalid');  // ❌ Erro de compilação
+
+// ✅ TypeScript sabe quais subjects existem
+ability.can('post');      // OK
+ability.can('invalid');   // ❌ Erro de compilação
+
+// ✅ TypeScript sabe quais actions existem para cada subject
+ability.can('post', 'read');    // OK
+ability.can('post', 'invalid'); // ❌ Erro de compilação
+```
+
+**💡 Dica**: Sempre use `as const` nos arrays para garantir tipos literais!
 
 ---
 
