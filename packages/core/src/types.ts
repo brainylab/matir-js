@@ -1,3 +1,7 @@
+import type { ActionsDefinition, RolesDefinition } from "./helper";
+
+export type { ActionsDefinition, RolesDefinition } from "./helper";
+
 export type MatirSubject = string;
 
 export type MatirConditions = string | number | boolean;
@@ -8,19 +12,19 @@ export type MatirCondition<TContext = unknown> =
   | ((context: TContext) => boolean);
 
 export type MatirPermission<
-  TRoles extends readonly string[] = readonly string[],
-  TActions extends readonly string[] = readonly string[],
+  TRoles extends RolesDefinition = RolesDefinition,
+  TActions extends ActionsDefinition = ActionsDefinition,
 > = {
   name?: string;
   reasons?: string;
-  roles?: TRoles[number][];
-  actions?: TActions[number][];
+  roles?: (keyof TRoles)[];
+  actions?: (keyof TActions)[];
   conditions?: Record<string, MatirConditions>;
 };
 
 export type MatirPermissions<
-  TRoles extends readonly string[] = readonly string[],
-  TActions extends readonly string[] = readonly string[],
+  TRoles extends RolesDefinition = RolesDefinition,
+  TActions extends ActionsDefinition = ActionsDefinition,
 > = {
   [key: MatirSubject]: {
     sub?: MatirPermissions<TRoles, TActions>;
@@ -28,9 +32,9 @@ export type MatirPermissions<
 };
 
 export type MatirUserPermissions<
-  TActions extends readonly string[] = readonly string[],
+  TActions extends ActionsDefinition = ActionsDefinition,
 > = {
-  [key: MatirSubject]: TActions[number][];
+  [key: MatirSubject]: (keyof TActions)[];
 };
 
 // Tipo recursivo para extrair todos os subjects incluindo nested
@@ -64,12 +68,12 @@ type GetSubjectByPath<
 export type ExtractActionsFromSubject<
   T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
-  TActions extends readonly string[],
+  TActions extends ActionsDefinition,
 > = GetSubjectByPath<T, Subject> extends { actions: infer Actions }
   ? Actions extends readonly (infer Action)[]
     ? Action
     : never
-  : TActions[number];
+  : keyof TActions;
 
 // Normaliza tipos literais para seus tipos base
 // true | false → boolean

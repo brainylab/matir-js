@@ -5,8 +5,13 @@ import { defineSchema, schemaToArray } from "./helper";
 describe("schemaToArray", () => {
   it("should convert schema to array with id property", () => {
     const schema = defineSchema({
-      roles: ["admin", "super_admin"],
-      actions: ["create", "read", "update"],
+      roles: { admin: "admin", super_admin: "super_admin" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
       rules: {
         order: {
           roles: ["admin"],
@@ -41,8 +46,13 @@ describe("schemaToArray", () => {
 
   it("should handle schema with conditions", () => {
     const schema = defineSchema({
-      roles: ["admin"],
-      actions: ["read", "update"],
+      roles: { admin: "admin" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
       rules: {
         document: {
           roles: ["admin"],
@@ -70,8 +80,10 @@ describe("schemaToArray", () => {
 
   it("should handle schema with sub without recursive", () => {
     const schema = defineSchema({
-      roles: ["admin"],
-      actions: ["create"],
+      roles: { admin: "admin" },
+      actions: {
+        create: "create",
+      },
       rules: {
         order: {
           roles: ["admin"],
@@ -86,6 +98,8 @@ describe("schemaToArray", () => {
     });
 
     const result = schemaToArray(schema);
+
+    console.log(result);
 
     expect(result.rules).toEqual([
       {

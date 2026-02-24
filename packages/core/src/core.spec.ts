@@ -18,8 +18,13 @@ describe("MatirCore", () => {
     };
 
     const defineSchema = matir.defineSchema({
-      roles: ["admin"],
-      actions: ["create", "read", "update", "delete"],
+      roles: { admin: "admin" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
       rules: {
         order: {
           actions: ["create", "read", "update", "delete"],
@@ -64,8 +69,8 @@ describe("MatirCore", () => {
 
   it("should grant access when user has required role", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: [],
+      roles: { admin: "admin" },
+      actions: {},
       rules: {
         order: {
           roles: ["admin"],
@@ -87,8 +92,8 @@ describe("MatirCore", () => {
 
   it("should deny access when user does not have required role", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: [],
+      roles: { admin: "admin" },
+      actions: {},
       rules: {
         order: { roles: ["admin"] },
       },
@@ -101,8 +106,8 @@ describe("MatirCore", () => {
 
   it("should deny access when user does not have required action permission", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: ["read"],
+      roles: { admin: "admin" },
+      actions: { read: "read" },
       rules: {
         order: { roles: ["admin"], actions: ["read"] },
       },
@@ -116,8 +121,8 @@ describe("MatirCore", () => {
 
   it("should not be able to action execute from define role", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: [],
+      roles: { admin: "admin" },
+      actions: {},
       rules: {
         order: {
           roles: ["admin"],
@@ -133,8 +138,13 @@ describe("MatirCore", () => {
 
   it("should be able to action execute from define permission", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: ["create", "read", "update", "delete"],
+      roles: { admin: "admin" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
       rules: {
         order: {
           actions: ["create", "read", "update", "delete"],
@@ -157,8 +167,13 @@ describe("MatirCore", () => {
 
   it("should deny access when user passes condition but subject has no conditions in schema", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: ["create", "read", "update", "delete"],
+      roles: { admin: "admin" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
       rules: {
         product: {
           actions: ["create", "read", "update", "delete"],
@@ -178,8 +193,13 @@ describe("MatirCore", () => {
 
   it("should be able to action execute from define permission and condition", () => {
     const { ability, current } = matir.createSchema({
-      roles: ["admin"],
-      actions: ["create", "read", "update", "delete"],
+      roles: { admin: "admin" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
       rules: {
         order: {
           actions: ["create", "read", "update", "delete"],

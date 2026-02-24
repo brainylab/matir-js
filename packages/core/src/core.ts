@@ -1,4 +1,8 @@
-import type { MatirSchemaDefinition } from "./helper";
+import type {
+  ActionsDefinition,
+  MatirSchemaDefinition,
+  RolesDefinition,
+} from "./helper";
 import type {
   ExtractActionsFromSubject,
   ExtractConditionsFromSubject,
@@ -12,30 +16,26 @@ import type {
 import { MatirCache } from "./cache";
 
 export class MatirCore<
-  TRoles extends readonly string[],
-  TActions extends readonly string[],
+  TRoles extends RolesDefinition,
+  TActions extends ActionsDefinition,
   TRules extends MatirPermissions<TRoles, TActions>,
   TContext = unknown,
 > {
-  private schema: MatirCache;
-  private currentRoles: TRoles[number][] = [];
+  private schema: MatirCache<TRoles, TActions>;
+  private currentRoles: (keyof TRoles)[] = [];
   private currentPermissions: MatirUserPermissions<TActions> = {};
-  private roles: TRoles;
-  private actions: TActions;
 
   constructor(
     schemaDefinition: MatirSchemaDefinition<TRoles, TActions, TRules>,
   ) {
-    this.roles = schemaDefinition.roles;
-    this.actions = schemaDefinition.actions;
-    this.schema = MatirCache.create(schemaDefinition.rules);
+    this.schema = MatirCache.create<TRoles, TActions>(schemaDefinition.rules);
   }
 
-  setRole(role: TRoles[number]): void {
+  setRole(role: keyof TRoles): void {
     this.currentRoles.push(role);
   }
 
-  setRoles(roles: TRoles[number][]): void {
+  setRoles(roles: (keyof TRoles)[]): void {
     this.currentRoles.push(...roles);
   }
 
@@ -44,7 +44,7 @@ export class MatirCore<
   }
 
   getCurrent(): {
-    roles: TRoles[number][];
+    roles: (keyof TRoles)[];
     permissions: MatirUserPermissions<TActions>;
   } {
     return { roles: this.currentRoles, permissions: this.currentPermissions };
@@ -123,7 +123,7 @@ export class MatirCore<
         return false;
       }
       const hasRole = rolesToCheck.some((userRole) =>
-        permission.roles?.includes(userRole),
+        permission.roles?.includes(userRole as string),
       );
       if (!hasRole) {
         return false;
@@ -238,8 +238,8 @@ export class MatirCore<
   }
 
   static createSchema<
-    const TRoles extends readonly string[],
-    const TActions extends readonly string[],
+    const TRoles extends RolesDefinition,
+    const TActions extends ActionsDefinition,
     const TRules extends MatirPermissions<TRoles, TActions>,
     TContext = unknown,
   >(schemaDefinition: MatirSchemaDefinition<TRoles, TActions, TRules>) {
