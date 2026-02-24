@@ -18,22 +18,27 @@ describe("MatirCore", () => {
     };
 
     const defineSchema = matir.defineSchema({
-      order: {
-        actions: ["create", "read", "update", "delete"],
-        roles: ["admin"],
-        sub: {
-          export: {
-            actions: ["create", "read", "update", "delete"],
-            roles: ["admin"],
+      roles: ["admin"],
+      actions: ["create", "read", "update", "delete"],
+      rules: {
+        order: {
+          actions: ["create", "read", "update", "delete"],
+          roles: ["admin"],
+          sub: {
+            export: {
+              actions: ["create", "read", "update", "delete"],
+              roles: ["admin"],
+            },
           },
         },
       },
     });
 
-    expect(schema).toEqual(defineSchema);
+    expect(schema).toEqual(defineSchema.rules);
   });
 
   it("should be able to define user permission", () => {
+    // @ts-expect-error
     const { current } = matir.createSchema({});
 
     const role = "admin";
@@ -59,8 +64,12 @@ describe("MatirCore", () => {
 
   it("should grant access when user has required role", () => {
     const { ability, current } = matir.createSchema({
-      order: {
-        roles: ["admin"],
+      roles: ["admin"],
+      actions: [],
+      rules: {
+        order: {
+          roles: ["admin"],
+        },
       },
     });
 
@@ -70,15 +79,19 @@ describe("MatirCore", () => {
   });
 
   it("should deny access when subject does not exist in schema", () => {
+    // @ts-expect-error
     const { ability } = matir.createSchema({});
 
-    // @ts-expect-error - testing non-existent subject
     expect(ability.can("production")).toBe(false);
   });
 
   it("should deny access when user does not have required role", () => {
     const { ability, current } = matir.createSchema({
-      order: { roles: ["admin"] },
+      roles: ["admin"],
+      actions: [],
+      rules: {
+        order: { roles: ["admin"] },
+      },
     });
 
     current.roles([]);
@@ -88,7 +101,11 @@ describe("MatirCore", () => {
 
   it("should deny access when user does not have required action permission", () => {
     const { ability, current } = matir.createSchema({
-      order: { roles: ["admin"], actions: ["read"] },
+      roles: ["admin"],
+      actions: ["read"],
+      rules: {
+        order: { roles: ["admin"], actions: ["read"] },
+      },
     });
 
     current.role("admin");
@@ -99,11 +116,16 @@ describe("MatirCore", () => {
 
   it("should not be able to action execute from define role", () => {
     const { ability, current } = matir.createSchema({
-      order: {
-        roles: ["admin"],
+      roles: ["admin"],
+      actions: [],
+      rules: {
+        order: {
+          roles: ["admin"],
+        },
       },
     });
 
+    // @ts-expect-error
     current.role("editor");
 
     expect(ability.can("order")).toBe(false);
@@ -111,9 +133,13 @@ describe("MatirCore", () => {
 
   it("should be able to action execute from define permission", () => {
     const { ability, current } = matir.createSchema({
-      order: {
-        actions: ["create", "read", "update", "delete"],
-        roles: ["admin"],
+      roles: ["admin"],
+      actions: ["create", "read", "update", "delete"],
+      rules: {
+        order: {
+          actions: ["create", "read", "update", "delete"],
+          roles: ["admin"],
+        },
       },
     });
 
@@ -131,10 +157,13 @@ describe("MatirCore", () => {
 
   it("should deny access when user passes condition but subject has no conditions in schema", () => {
     const { ability, current } = matir.createSchema({
-      product: {
-        actions: ["create", "read", "update", "delete"],
-        roles: ["admin"],
-        // Sem conditions no schema
+      roles: ["admin"],
+      actions: ["create", "read", "update", "delete"],
+      rules: {
+        product: {
+          actions: ["create", "read", "update", "delete"],
+          roles: ["admin"],
+        },
       },
     });
 
@@ -149,32 +178,36 @@ describe("MatirCore", () => {
 
   it("should be able to action execute from define permission and condition", () => {
     const { ability, current } = matir.createSchema({
-      order: {
-        actions: ["create", "read", "update", "delete"],
-        roles: ["admin"],
-        conditions: {
-          user: 1,
+      roles: ["admin"],
+      actions: ["create", "read", "update", "delete"],
+      rules: {
+        order: {
+          actions: ["create", "read", "update", "delete"],
+          roles: ["admin"],
+          conditions: {
+            user: 1,
+          },
         },
-      },
-      config: {
-        actions: ["create", "read", "update", "delete"],
-        roles: ["admin"],
-        conditions: {
-          active: true,
-        },
-        sub: {
-          list: {
-            actions: ["create", "read", "update", "delete"],
-            roles: ["admin"],
-            conditions: {
-              departament: "ti",
+        config: {
+          actions: ["create", "read", "update", "delete"],
+          roles: ["admin"],
+          conditions: {
+            active: true,
+          },
+          sub: {
+            list: {
+              actions: ["create", "read", "update", "delete"],
+              roles: ["admin"],
+              conditions: {
+                departament: "ti",
+              },
             },
           },
         },
-      },
-      users: {
-        actions: ["create", "read", "update", "delete"],
-        roles: ["admin"],
+        users: {
+          actions: ["create", "read", "update", "delete"],
+          roles: ["admin"],
+        },
       },
     });
 

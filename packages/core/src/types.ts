@@ -1,19 +1,3 @@
-export interface MatirRoleMap {
-  super_admin: "super_admin";
-  admin: "admin";
-}
-
-export interface MatirActionMap {
-  create: "create";
-  read: "read";
-  update: "update";
-  delete: "delete";
-}
-
-// Extrair as roles e actions das interfaces
-export type MatirRole = MatirRoleMap[keyof MatirRoleMap];
-export type MatirAction = MatirActionMap[keyof MatirActionMap];
-
 export type MatirSubject = string;
 
 export type MatirConditions = string | number | boolean;
@@ -23,29 +7,37 @@ export type MatirCondition<TContext = unknown> =
   | Record<string, MatirConditions>
   | ((context: TContext) => boolean);
 
-export type MatirPermission = {
+export type MatirPermission<
+  TRoles extends readonly string[] = readonly string[],
+  TActions extends readonly string[] = readonly string[],
+> = {
   name?: string;
   reasons?: string;
-  roles?: MatirRole[];
-  actions?: MatirAction[];
+  roles?: TRoles[number][];
+  actions?: TActions[number][];
   conditions?: Record<string, MatirConditions>;
 };
 
-export type MatirPermissions = {
+export type MatirPermissions<
+  TRoles extends readonly string[] = readonly string[],
+  TActions extends readonly string[] = readonly string[],
+> = {
   [key: MatirSubject]: {
-    sub?: MatirPermissions;
-  } & MatirPermission;
+    sub?: MatirPermissions<TRoles, TActions>;
+  } & MatirPermission<TRoles, TActions>;
 };
 
-export type MatirUserPermissions = {
-  [key: MatirSubject]: MatirAction[];
+export type MatirUserPermissions<
+  TActions extends readonly string[] = readonly string[],
+> = {
+  [key: MatirSubject]: TActions[number][];
 };
 
 // Tipo recursivo para extrair todos os subjects incluindo nested
-export type ExtractSubjects<T extends MatirPermissions> = {
+export type ExtractSubjects<T extends MatirPermissions<any, any>> = {
   [K in keyof T]: K extends string
     ? T[K] extends { sub: infer Sub }
-      ? Sub extends MatirPermissions
+      ? Sub extends MatirPermissions<any, any>
         ? K | `${K}.${ExtractSubjects<Sub>}`
         : K
       : K
@@ -54,12 +46,12 @@ export type ExtractSubjects<T extends MatirPermissions> = {
 
 // Tipo utilitário para extrair as actions de um subject específico
 type GetSubjectByPath<
-  T extends MatirPermissions,
+  T extends MatirPermissions<any, any>,
   Path extends string,
 > = Path extends `${infer First}.${infer Rest}`
   ? First extends keyof T
     ? T[First] extends { sub: infer Sub }
-      ? Sub extends MatirPermissions
+      ? Sub extends MatirPermissions<any, any>
         ? GetSubjectByPath<Sub, Rest>
         : never
       : never
@@ -70,13 +62,14 @@ type GetSubjectByPath<
 
 // Extrair as actions de um subject específico
 export type ExtractActionsFromSubject<
-  T extends MatirPermissions,
+  T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
+  TActions extends readonly string[],
 > = GetSubjectByPath<T, Subject> extends { actions: infer Actions }
   ? Actions extends readonly (infer Action)[]
     ? Action
     : never
-  : MatirAction;
+  : TActions[number];
 
 // Normaliza tipos literais para seus tipos base
 // true | false → boolean
@@ -97,7 +90,7 @@ type NormalizeConditions<T> = {
 
 // Verifica se um subject tem conditions definidas
 export type HasConditions<
-  T extends MatirPermissions,
+  T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
 > = GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
   ? Conditions extends Record<string, MatirConditions>
@@ -107,7 +100,7 @@ export type HasConditions<
 
 // Extrai as conditions de um subject específico (com tipos normalizados)
 export type ExtractConditionsFromSubject<
-  T extends MatirPermissions,
+  T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
 > = GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
   ? Conditions extends Record<string, MatirConditions>
@@ -117,7 +110,7 @@ export type ExtractConditionsFromSubject<
 
 // Tipo para o parâmetro condition baseado no schema
 export type ExtractConditionType<
-  T extends MatirPermissions,
+  T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
   TContext = unknown,
 > = HasConditions<T, Subject> extends true
