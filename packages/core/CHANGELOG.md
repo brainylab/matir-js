@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.2.0
+
+### Minor Changes
+
+- [`c5ead45`](https://github.com/brainylab/matir-js/commit/c5ead45711a4fecc9b272402151dcce183b2c545) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - adicionado novo helper para a transformação do schema de objeto para Array
+
 ## 0.1.2
 
 ### Patch Changes
