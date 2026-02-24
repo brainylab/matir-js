@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.3.0
+
+### Minor Changes
+
+- [#5](https://github.com/brainylab/matir-js/pull/5) [`63b0ab7`](https://github.com/brainylab/matir-js/commit/63b0ab73f65dbed9a3849826911949a084923bc3) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - refatorado o projeto para uma nova api aonde definimos as roles e as actions possiveis no defineSchema e ele propaga as types no projeto
+
 ## 0.2.0
 
 ### Minor Changes
