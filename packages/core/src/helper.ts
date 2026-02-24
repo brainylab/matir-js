@@ -1,28 +1,75 @@
 import type { MatirPermission, MatirPermissions } from "./types";
 
-export function defineSchema<T extends MatirPermissions>(schema: T) {
+export type MatirSchemaDefinition<
+  TRoles extends readonly string[],
+  TActions extends readonly string[],
+  TRules extends MatirPermissions<TRoles, TActions>,
+> = {
+  roles: TRoles;
+  actions: TActions;
+  rules: TRules;
+};
+
+export function defineSchema<
+  const TRoles extends readonly string[],
+  const TActions extends readonly string[],
+  const TRules extends MatirPermissions<TRoles, TActions>,
+>(schema: MatirSchemaDefinition<TRoles, TActions, TRules>) {
   return schema;
 }
 
 /**
  * Tipo para o objeto no array com id
  */
-export type SchemaArrayItem = MatirPermission & {
+export type SchemaArrayItem<
+  TRoles extends readonly string[] = readonly string[],
+  TActions extends readonly string[] = readonly string[],
+> = Omit<MatirPermission<TRoles, TActions>, "sub"> & {
   id: string;
-  sub?: MatirPermissions | SchemaArrayItem[];
+  sub?: SchemaArrayItem<TRoles, TActions>[];
 };
 
-export function schemaToArray<T extends MatirPermissions>(schema: T) {
-  return Object.entries(schema).map(([key, value]) => {
-    const item: SchemaArrayItem = {
+export type SchemaArrayResult<
+  TRoles extends readonly string[],
+  TActions extends readonly string[],
+> = {
+  roles: TRoles;
+  actions: TActions;
+  rules: SchemaArrayItem<TRoles, TActions>[];
+};
+
+function convertRulesToArray<
+  TRoles extends readonly string[],
+  TActions extends readonly string[],
+>(
+  rules: MatirPermissions<TRoles, TActions>,
+): SchemaArrayItem<TRoles, TActions>[] {
+  return Object.entries(rules).map(([key, value]) => {
+    const { sub, ...rest } = value;
+
+    const item: SchemaArrayItem<TRoles, TActions> = {
       id: key,
-      ...value,
+      ...rest,
     };
 
-    if (value.sub) {
-      item.sub = schemaToArray(value.sub);
+    if (sub) {
+      item.sub = convertRulesToArray(sub);
     }
 
     return item;
   });
+}
+
+export function schemaToArray<
+  TRoles extends readonly string[],
+  TActions extends readonly string[],
+  TRules extends MatirPermissions<TRoles, TActions>,
+>(
+  schema: MatirSchemaDefinition<TRoles, TActions, TRules>,
+): SchemaArrayResult<TRoles, TActions> {
+  return {
+    roles: schema.roles,
+    actions: schema.actions,
+    rules: convertRulesToArray(schema.rules),
+  };
 }
