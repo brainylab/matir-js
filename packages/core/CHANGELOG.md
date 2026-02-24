@@ -1,5 +1,17 @@
 # @matir-js/core
 
+## 0.4.0
+
+### Minor Changes
+
+- [`fcd5d69`](https://github.com/brainylab/matir-js/commit/fcd5d693d42d5998ab6d62e33a4091e7d480664e) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Use object maps for roles and actions
+
+  Replace array-based TRoles/TActions with RolesDefinition and
+  ActionsDefinition (Record<string,string>). Add helpers to convert role/action
+  objects to arrays for schemaToArray. Make MatirCache generic over roles/actions
+  and adjust MatirCore types/usages. Update tests to use object maps and tweak
+  biome.json lint settings.
+
 ## 0.3.0
 
 ### Minor Changes
