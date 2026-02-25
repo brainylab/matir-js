@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.5.2
+
+### Patch Changes
+
+- [`837604b`](https://github.com/brainylab/matir-js/commit/837604b2a7e12ff8b1b43752190f46ae988498d7) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Add description to MatirPermission type
+
 ## 0.5.1
 
 ### Patch Changes
