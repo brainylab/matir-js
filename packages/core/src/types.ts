@@ -18,6 +18,7 @@ export type MatirPermission<
   TActions extends ActionsDefinition = ActionsDefinition,
 > = {
   name?: string;
+  description?: string;
   reasons?: string;
   roles?: (keyof TRoles)[];
   actions?: (keyof TActions)[];
