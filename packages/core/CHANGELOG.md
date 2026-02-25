@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.5.1
+
+### Patch Changes
+
+- [`de3dd47`](https://github.com/brainylab/matir-js/commit/de3dd474133cb532ef437470bf82fea294d98fc9) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - fix: ajustes dos types na função de diffPermission
+
 ## 0.5.0
 
 ### Minor Changes
