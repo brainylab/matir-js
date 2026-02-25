@@ -31,16 +31,16 @@ export class MatirCore<
     this.schema = MatirCache.create<TRoles, TActions>(schemaDefinition.rules);
   }
 
-  setRole(role: keyof TRoles): void {
+  setRole(role: string): void {
     this.currentRoles.push(role);
   }
 
-  setRoles(roles: (keyof TRoles)[]): void {
+  setRoles(roles: string[]): void {
     this.currentRoles.push(...roles);
   }
 
-  setPermissions(permissions: MatirUserPermissions<TActions>): void {
-    this.currentPermissions = permissions;
+  setPermissions(permissions: Record<string, string[]>): void {
+    this.currentPermissions = permissions as MatirUserPermissions<TActions>;
   }
 
   getCurrent(): {

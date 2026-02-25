@@ -130,7 +130,6 @@ describe("MatirCore", () => {
       },
     });
 
-    // @ts-expect-error
     current.role("editor");
 
     expect(ability.can("order")).toBe(false);
