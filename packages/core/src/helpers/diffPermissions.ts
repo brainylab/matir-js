@@ -1,8 +1,6 @@
-import type { MatirCurrentPermissions } from "../types";
-
 export function diffPermissions(
-  current: MatirCurrentPermissions,
-  values: MatirCurrentPermissions,
+  current: Record<string, string[]>,
+  values: Record<string, string[]>,
 ) {
   // Itera sobre todas as keys de values (usando keys como base)
   for (const key in values) {
