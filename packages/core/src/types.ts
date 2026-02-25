@@ -1,6 +1,8 @@
-import type { ActionsDefinition, RolesDefinition } from "./helper";
+// Tipo para roles - apenas objeto agora
+export type RolesDefinition = Record<string, string>;
 
-export type { ActionsDefinition, RolesDefinition } from "./helper";
+// Tipo para actions - apenas objeto agora
+export type ActionsDefinition = Record<string, string>;
 
 export type MatirSubject = string;
 
@@ -31,7 +33,7 @@ export type MatirPermissions<
   } & MatirPermission<TRoles, TActions>;
 };
 
-export type MatirUserPermissions<
+export type MatirCurrentPermissions<
   TActions extends ActionsDefinition = ActionsDefinition,
 > = {
   [key: MatirSubject]: (keyof TActions)[];

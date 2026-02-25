@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { defineSchema, schemaToArray } from "./helper";
+import { defineSchema } from "./defineSchema";
+import { schemaToArray } from "./schemaToArray";
 
 describe("schemaToArray", () => {
   it("should convert schema to array with id property", () => {
@@ -98,8 +99,6 @@ describe("schemaToArray", () => {
     });
 
     const result = schemaToArray(schema);
-
-    console.log(result);
 
     expect(result.rules).toEqual([
       {

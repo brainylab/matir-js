@@ -1,16 +1,14 @@
+import type { MatirSchemaDefinition } from "./helpers/defineSchema";
 import type {
   ActionsDefinition,
-  MatirSchemaDefinition,
-  RolesDefinition,
-} from "./helper";
-import type {
   ExtractActionsFromSubject,
   ExtractConditionsFromSubject,
   ExtractSubjects,
   HasConditions,
   MatirConditions,
+  MatirCurrentPermissions,
   MatirPermissions,
-  MatirUserPermissions,
+  RolesDefinition,
 } from "./types";
 
 import { MatirCache } from "./cache";
@@ -23,7 +21,7 @@ export class MatirCore<
 > {
   private schema: MatirCache<TRoles, TActions>;
   private currentRoles: (keyof TRoles)[] = [];
-  private currentPermissions: MatirUserPermissions<TActions> = {};
+  private currentPermissions: MatirCurrentPermissions<TActions> = {};
 
   constructor(
     schemaDefinition: MatirSchemaDefinition<TRoles, TActions, TRules>,
@@ -40,20 +38,19 @@ export class MatirCore<
   }
 
   setPermissions(permissions: Record<string, string[]>): void {
-    this.currentPermissions = permissions as MatirUserPermissions<TActions>;
+    this.currentPermissions = permissions as MatirCurrentPermissions<TActions>;
   }
 
   getCurrent(): {
     roles: (keyof TRoles)[];
-    permissions: MatirUserPermissions<TActions>;
+    permissions: MatirCurrentPermissions<TActions>;
   } {
     return { roles: this.currentRoles, permissions: this.currentPermissions };
   }
 
   clearCurrent(): void {
-    console.log("aqui");
     this.currentRoles = [];
-    this.currentPermissions = {} as MatirUserPermissions<TActions>;
+    this.currentPermissions = {} as MatirCurrentPermissions<TActions>;
   }
 
   // Sobrecarga 1: condition é FUNÇÃO com action → context é OBRIGATÓRIO e tipo é INFERIDO

@@ -1,28 +1,10 @@
-import type { MatirPermission, MatirPermissions } from "./types";
-
-// Tipo para roles - apenas objeto agora
-export type RolesDefinition = Record<string, string>;
-
-// Tipo para actions - apenas objeto agora
-export type ActionsDefinition = Record<string, string>;
-
-export type MatirSchemaDefinition<
-  TRoles extends RolesDefinition,
-  TActions extends ActionsDefinition,
-  TRules extends MatirPermissions<TRoles, TActions>,
-> = {
-  roles: TRoles;
-  actions: TActions;
-  rules: TRules;
-};
-
-export function defineSchema<
-  const TRoles extends RolesDefinition,
-  const TActions extends ActionsDefinition,
-  const TRules extends MatirPermissions<TRoles, TActions>,
->(schema: MatirSchemaDefinition<TRoles, TActions, TRules>) {
-  return schema;
-}
+import type {
+  ActionsDefinition,
+  MatirPermission,
+  MatirPermissions,
+  RolesDefinition,
+} from "../types";
+import type { MatirSchemaDefinition } from "./defineSchema";
 
 /**
  * Tipo para role/action no array
