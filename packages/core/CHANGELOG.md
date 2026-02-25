@@ -1,5 +1,20 @@
 # @matir-js/core
 
+## 0.5.0
+
+### Minor Changes
+
+- [`55c5393`](https://github.com/brainylab/matir-js/commit/55c539355a6315a12770d6a044d1264ce2251a18) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Move schema helpers and rename permission type
+
+  Replace core's helper.ts with new helpers modules (defineSchema,
+  schemaToArray and diffPermissions) and remove helper.spec. Move
+  RolesDefinition and ActionsDefinition into types.ts and rename
+  MatirUserPermissions to MatirCurrentPermissions. Update core and cache
+  to use the new types, remove a stray console.log, and export
+  diffPermissions from index.
+
+- [`359fae4`](https://github.com/brainylab/matir-js/commit/359fae4f76831b197c5aee4131015587baf696d1) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - correção na tipagem das funções para definir a current role e permission
+
 ## 0.4.0
 
 ### Minor Changes
