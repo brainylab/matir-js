@@ -31,12 +31,26 @@ describe("schemaToArray", () => {
       {
         id: "order",
         roles: ["admin"],
-        actions: ["create", "read"],
+        actions: [
+          {
+            id: "create",
+            label: "create",
+          },
+          {
+            id: "read",
+            label: "read",
+          },
+        ],
       },
       {
         id: "config",
         roles: ["admin", "super_admin"],
-        actions: ["update"],
+        actions: [
+          {
+            id: "update",
+            label: "update",
+          },
+        ],
       },
     ]);
 
@@ -71,7 +85,16 @@ describe("schemaToArray", () => {
       {
         id: "document",
         roles: ["admin"],
-        actions: ["read", "update"],
+        actions: [
+          {
+            id: "read",
+            label: "read",
+          },
+          {
+            id: "update",
+            label: "update",
+          },
+        ],
         conditions: {
           status: "draft",
         },
@@ -108,7 +131,12 @@ describe("schemaToArray", () => {
           {
             id: "export",
             roles: ["admin"],
-            actions: ["create"],
+            actions: [
+              {
+                id: "create",
+                label: "create",
+              },
+            ],
           },
         ],
       },
