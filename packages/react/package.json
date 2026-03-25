@@ -1,0 +1,50 @@
+{
+  "name": "@matir-js/react",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json"
+  ],
+  "scripts": {
+    "changeset": "changeset",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore",
+    "build": "tsdown"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brainylab/matir"
+  },
+  "keywords": [],
+  "author": "andrefelipeschulle",
+  "license": "MIT",
+  "packageManager": "pnpm@10.29.3",
+  "dependencies": {
+    "@matir-js/core": "workspace:*",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@types/node": "25.2.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-v8": "4.0.18",
+    "@vitest/ui": "4.0.18",
+    "clean-package": "2.2.0",
+    "tsdown": "0.20.3",
+    "tsx": "4.21.0",
+    "typescript": "5.9.2",
+    "vitest": "4.0.18"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19"
+  }
+}
