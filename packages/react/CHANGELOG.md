@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.1.1
+
+### Patch Changes
+
+- [`741380c`](https://github.com/brainylab/matir-js/commit/741380c48b57df3be0dd18904f54d108a63efb17) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - fix: correção no package.json, removido a propriedade packages do clen-package
+
 ## 0.1.0
 
 ### Minor Changes
