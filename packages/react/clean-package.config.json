@@ -1,6 +1,5 @@
 {
   "remove": [
-    "dependencies",
     "devDependencies",
     "scripts",
     "config",
