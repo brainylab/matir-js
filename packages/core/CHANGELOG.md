@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.5.3
+
+### Patch Changes
+
+- [`e354567`](https://github.com/brainylab/matir-js/commit/e3545679090f9fcb50cc560db46b3f581f91a8bd) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - refactor: refatorado a função helper schemaToArray para converter as actions dos rules para um objeto com id e label
+
 ## 0.5.2
 
 ### Patch Changes
