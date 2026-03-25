@@ -27,7 +27,7 @@ export class MatirCore<
   constructor(
     schemaDefinition: MatirSchemaDefinition<TRoles, TActions, TRules>,
   ) {
-    this.roles = schemaDefinition.roles;
+    this.roles = schemaDefinition.roles || {};
     this.schema = MatirCache.create<TRoles, TActions>(schemaDefinition.rules);
   }
 
