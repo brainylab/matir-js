@@ -13,4 +13,4 @@ matir.defineSchema = defineSchema;
 matir.schemaToArray = schemaToArray;
 matir.diffPermissions = diffPermissions;
 
-export { matir, defineSchema, schemaToArray, diffPermissions };
+export { matir, defineSchema, schemaToArray, diffPermissions, MatirCore };

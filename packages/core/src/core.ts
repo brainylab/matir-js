@@ -20,36 +20,43 @@ export class MatirCore<
   TContext = unknown,
 > {
   private schema: MatirCache<TRoles, TActions>;
-  private currentRoles: (keyof TRoles)[] = [];
+  private roles: TRoles;
+  private currentRole: keyof TRoles | null = null;
   private currentPermissions: MatirCurrentPermissions<TActions> = {};
 
   constructor(
     schemaDefinition: MatirSchemaDefinition<TRoles, TActions, TRules>,
   ) {
+    this.roles = schemaDefinition.roles;
     this.schema = MatirCache.create<TRoles, TActions>(schemaDefinition.rules);
   }
 
-  setRole(role: string): void {
-    this.currentRoles.push(role);
+  setCurrentRole(role: string) {
+    this.currentRole = role as keyof TRoles;
+
+    return this.getCurrentRole();
   }
 
-  setRoles(roles: string[]): void {
-    this.currentRoles.push(...roles);
-  }
-
-  setPermissions(permissions: Record<string, string[]>): void {
+  setCurrentPermissions(permissions: Record<string, string[]>): void {
     this.currentPermissions = permissions as MatirCurrentPermissions<TActions>;
   }
 
+  getCurrentRole() {
+    return {
+      value: this.currentRole,
+      description: this.currentRole ? this.roles[this.currentRole] : null,
+    };
+  }
+
   getCurrent(): {
-    roles: (keyof TRoles)[];
+    role: keyof TRoles | null;
     permissions: MatirCurrentPermissions<TActions>;
   } {
-    return { roles: this.currentRoles, permissions: this.currentPermissions };
+    return { role: this.currentRole, permissions: this.currentPermissions };
   }
 
   clearCurrent(): void {
-    this.currentRoles = [];
+    this.currentRole = null;
     this.currentPermissions = {} as MatirCurrentPermissions<TActions>;
   }
 
@@ -111,18 +118,11 @@ export class MatirCore<
     }
 
     // 2. Verifica roles (usa as roles definidas no setCurrent)
-    const rolesToCheck = this.currentRoles;
-    // Se o subject tem roles definidas, verifica se o usuário tem pelo menos uma delas
-
     if (permission.roles && permission.roles.length > 0) {
-      if (rolesToCheck.length === 0) {
-        // Subject requer roles, mas usuário não tem nenhuma
+      if (!this.currentRole) {
         return false;
       }
-      const hasRole = rolesToCheck.some((userRole) =>
-        permission.roles?.includes(userRole as string),
-      );
-      if (!hasRole) {
+      if (!permission.roles.includes(this.currentRole as string)) {
         return false;
       }
     }
@@ -250,11 +250,11 @@ export class MatirCore<
     };
 
     const current = {
-      role: instance.setRole.bind(instance),
-      roles: instance.setRoles.bind(instance),
-      permissions: instance.setPermissions.bind(instance),
+      role: instance.setCurrentRole.bind(instance),
+      permissions: instance.setCurrentPermissions.bind(instance),
       clear: instance.clearCurrent.bind(instance),
       get: instance.getCurrent.bind(instance),
+      getRole: instance.getCurrentRole.bind(instance),
     };
 
     return { ability, current };

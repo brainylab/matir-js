@@ -1,5 +1,9 @@
-import type { ActionsDefinition, RolesDefinition } from "./helper";
-import type { MatirPermission, MatirPermissions } from "./types";
+import type {
+  ActionsDefinition,
+  MatirPermission,
+  MatirPermissions,
+  RolesDefinition,
+} from "./types";
 
 export class MatirCache<
   TRoles extends RolesDefinition = RolesDefinition,

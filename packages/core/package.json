@@ -3,20 +3,12 @@
   "version": "0.5.2",
   "description": "",
   "type": "module",
-  "main": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "main": "./src/index.ts",
   "files": [
     "dist",
     "LICENSE",
     "package.json"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.mts",
-      "import": "./dist/index.mjs",
-      "default": "./dist/index.mjs"
-    }
-  },
   "scripts": {
     "changeset": "changeset",
     "prepack": "clean-package",
@@ -36,7 +28,7 @@
   "keywords": [],
   "author": "andrefelipeschulle",
   "license": "MIT",
-  "packageManager": "pnpm@10.25.0",
+  "packageManager": "pnpm@10.29.3",
   "devDependencies": {
     "@types/node": "25.2.3",
     "@vitest/coverage-v8": "4.0.18",

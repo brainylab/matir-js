@@ -34,6 +34,10 @@ export type MatirPermissions<
   } & MatirPermission<TRoles, TActions>;
 };
 
+export type MatirCurrentRole<TRoles extends RolesDefinition = RolesDefinition> =
+  | keyof TRoles
+  | null;
+
 export type MatirCurrentPermissions<
   TActions extends ActionsDefinition = ActionsDefinition,
 > = {

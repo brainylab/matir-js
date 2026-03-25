@@ -52,24 +52,22 @@ describe("MatirCore", () => {
     current.role(role);
     current.permissions(permissions);
 
-    const currentValue = current.get();
+    expect(current.get().role).toStrictEqual(role);
+    expect(current.get().permissions).toEqual(permissions);
 
-    expect(currentValue.roles).toStrictEqual([role]);
-    expect(currentValue.permissions).toEqual(permissions);
+    current.role("view");
 
-    current.roles(["view"]);
-
-    expect(currentValue.roles).toStrictEqual([role, "view"]);
+    expect(current.get().role).toStrictEqual("view");
 
     current.clear();
 
-    expect(current.get().roles).toEqual([]);
+    expect(current.get().role).toEqual(null);
     expect(current.get().permissions).toEqual({});
   });
 
   it("should grant access when user has required role", () => {
     const { ability, current } = matir.createSchema({
-      roles: { admin: "admin" },
+      roles: { admin: "Administrador" },
       actions: {},
       rules: {
         order: {
@@ -79,6 +77,8 @@ describe("MatirCore", () => {
     });
 
     current.role("admin");
+
+    console.log(current.getRole());
 
     expect(ability.can("order")).toBe(true);
   });
@@ -99,7 +99,7 @@ describe("MatirCore", () => {
       },
     });
 
-    current.roles([]);
+    current.role("");
 
     expect(ability.can("order")).toBe(false);
   });
