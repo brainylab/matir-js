@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.6.0
+
+### Minor Changes
+
+- [`01be910`](https://github.com/brainylab/matir-js/commit/01be910669259a57a269fb61bc5b3a3726432b73) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - refactor: refatorado o core e removido o role de array para string, single role, ajustes de performance e novas apis para consulta do role
+
 ## 0.5.3
 
 ### Patch Changes
