@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.7.0
+
+### Minor Changes
+
+- [`4d34e5c`](https://github.com/brainylab/matir-js/commit/4d34e5c0867c90d0718b3f95c39440a7c4e347b4) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - feat: adicionado novos helper de types para tipas o retorno das permissões no hook useCurrent
+
 ## 0.6.0
 
 ### Minor Changes
