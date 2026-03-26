@@ -78,8 +78,6 @@ describe("MatirCore", () => {
 
     current.role("admin");
 
-    console.log(current.getRole());
-
     expect(ability.can("order")).toBe(true);
   });
 
