@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.1.2
+
+### Patch Changes
+
+- [`6d47383`](https://github.com/brainylab/matir-js/commit/6d47383b705d508bc03861033d6163fa2a664ce1) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - fix: correção no build do projeto
+
 ## 0.1.1
 
 ### Patch Changes
