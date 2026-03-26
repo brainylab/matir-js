@@ -45,11 +45,11 @@ type CurrentPermissions = MatirRegister extends { schema: infer S }
   ? S extends Schema
     ? InferPermissions<S>
     : Record<string, string[]>
-  : Record<string, string[]> | null;
+  : Record<string, string[]>;
 
 type MatirContextValue = {
   role: CurrentRole;
-  permissions: CurrentPermissions;
+  permissions: CurrentPermissions | null;
   ability: RegisteredAbility;
   setCurrentRole: (role: string) => void;
   setCurrentPermissions: (permissions: Record<string, string[]>) => void;
@@ -68,7 +68,9 @@ export function MatirProvider({
   current?: MatirCurrentInput;
 }) {
   const [role, setRole] = useState<CurrentRole>(null);
-  const [permissions, setPermissions] = useState<CurrentPermissions>(null);
+  const [permissions, setPermissions] = useState<CurrentPermissions | null>(
+    null,
+  );
 
   const [, forceUpdate] = useReducer((x: number) => x + 1, 0);
 
