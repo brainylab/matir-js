@@ -1,5 +1,16 @@
 # @matir-js/react
 
+## 0.2.0
+
+### Minor Changes
+
+- [`4d34e5c`](https://github.com/brainylab/matir-js/commit/4d34e5c0867c90d0718b3f95c39440a7c4e347b4) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - feat: adicionado novos helper de types para tipas o retorno das permissões no hook useCurrent
+
+### Patch Changes
+
+- Updated dependencies [[`4d34e5c`](https://github.com/brainylab/matir-js/commit/4d34e5c0867c90d0718b3f95c39440a7c4e347b4)]:
+  - @matir-js/core@0.7.0
+
 ## 0.1.4
 
 ### Patch Changes
