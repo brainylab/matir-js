@@ -136,7 +136,7 @@ export function useCurrent() {
 
   return {
     role: ctx.role,
-    permissions: ctx.permissions,
+    permissions: ctx.permissions as CurrentPermissions | null,
     setRole: ctx.setCurrentRole,
     setPermissions: ctx.setCurrentPermissions,
     clearAll: ctx.clearAll,
