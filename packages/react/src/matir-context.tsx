@@ -41,8 +41,11 @@ type CurrentRole = {
   description: string | null;
 } | null;
 
+type CurrentPermissions = Record<string, string[]> | null;
+
 type MatirContextValue = {
   role: CurrentRole;
+  permissions: CurrentPermissions;
   ability: RegisteredAbility;
   setCurrentRole: (role: string) => void;
   setCurrentPermissions: (permissions: Record<string, string[]>) => void;
@@ -61,9 +64,11 @@ export function MatirProvider({
   current?: MatirCurrentInput;
 }) {
   const [role, setRole] = useState<CurrentRole>(null);
+  const [permissions, setPermissions] = useState<CurrentPermissions>(null);
 
   const [, forceUpdate] = useReducer((x: number) => x + 1, 0);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <inital current values>
   const { ability, current } = useMemo(() => {
     const instance = matir.createSchema(schema);
 
@@ -91,6 +96,8 @@ export function MatirProvider({
   const setCurrentPermissions = useCallback(
     (permissions: Record<string, string[]>) => {
       current.permissions(permissions);
+
+      setPermissions(permissions);
       forceUpdate();
     },
     [current],
@@ -105,6 +112,7 @@ export function MatirProvider({
     <MatirContext.Provider
       value={{
         role,
+        permissions,
         ability: ability as RegisteredAbility,
         setCurrentRole,
         setCurrentPermissions,
@@ -122,6 +130,7 @@ export function useCurrent() {
 
   return {
     role: ctx.role,
+    permissions: ctx.permissions,
     setRole: ctx.setCurrentRole,
     setPermissions: ctx.setCurrentPermissions,
     clearAll: ctx.clearAll,
