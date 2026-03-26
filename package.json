@@ -16,8 +16,8 @@
     "@changesets/cli": "2.29.8",
     "@changesets/get-release-plan": "4.0.14",
     "@changesets/types": "6.1.0",
-    "turbo": "2.8.6",
-    "typescript": "5.9.2"
+    "turbo": "2.8.20",
+    "typescript": "6.0.2"
   },
   "engines": {
     "node": ">=18"
