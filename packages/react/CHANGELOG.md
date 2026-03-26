@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.1.3
+
+### Patch Changes
+
+- [`816373d`](https://github.com/brainylab/matir-js/commit/816373dfcb3bb2e70a4c30da91a464cd8adceb70) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - feat: exportado o matir core diretamente do pacote react
+
 ## 0.1.2
 
 ### Patch Changes
