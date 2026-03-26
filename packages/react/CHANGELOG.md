@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.1.4
+
+### Patch Changes
+
+- [`0bb47c7`](https://github.com/brainylab/matir-js/commit/0bb47c780152ca1ea1291c8bd7f1844bd9fcaa1b) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - feat: adicionado as permissoes no userCurrent
+
 ## 0.1.3
 
 ### Patch Changes
