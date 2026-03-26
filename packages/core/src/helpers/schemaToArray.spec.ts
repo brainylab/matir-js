@@ -115,6 +115,18 @@ describe("schemaToArray", () => {
             export: {
               roles: ["admin"],
               actions: ["create"],
+              sub: {
+                send: {
+                  roles: ["admin"],
+                  actions: ["create"],
+                  sub: {
+                    mail: {
+                      roles: ["admin"],
+                      actions: ["create"],
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -135,6 +147,30 @@ describe("schemaToArray", () => {
               {
                 id: "create",
                 label: "create",
+              },
+            ],
+            sub: [
+              {
+                id: "send",
+                roles: ["admin"],
+                actions: [
+                  {
+                    id: "create",
+                    label: "create",
+                  },
+                ],
+                sub: [
+                  {
+                    id: "mail",
+                    roles: ["admin"],
+                    actions: [
+                      {
+                        id: "create",
+                        label: "create",
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },
