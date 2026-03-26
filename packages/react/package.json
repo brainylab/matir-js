@@ -28,12 +28,12 @@
   "license": "MIT",
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
-    "@matir-js/core": "workspace:*",
-    "react": "^19",
-    "react-dom": "^19"
+    "@matir-js/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "25.2.3",
+    "react": "^19",
+    "react-dom": "^19",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "4.0.18",
