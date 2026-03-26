@@ -1,3 +1,5 @@
+import type { MatirSchemaDefinition } from "./helpers/defineSchema";
+
 // Tipo para roles - apenas objeto agora
 export type RolesDefinition = Record<string, string>;
 
@@ -127,3 +129,29 @@ export type ExtractConditionType<
 > = HasConditions<T, Subject> extends true
   ? ExtractConditionsFromSubject<T, Subject> | ((context: TContext) => boolean)
   : MatirCondition<TContext>;
+
+export type InferPermissionsMap<
+  TRules extends MatirPermissions<any, any>,
+  TActions extends ActionsDefinition,
+> = {
+  [S in ExtractSubjects<TRules>]?: ExtractActionsFromSubject<
+    TRules,
+    S,
+    TActions
+  >[];
+};
+
+export type InferPermissions<
+  TSchema extends MatirSchemaDefinition<
+    RolesDefinition,
+    ActionsDefinition,
+    MatirPermissions<RolesDefinition, ActionsDefinition>
+  >,
+> =
+  TSchema extends MatirSchemaDefinition<
+    infer _TRoles,
+    infer TActions,
+    infer TRules
+  >
+    ? InferPermissionsMap<TRules, TActions>
+    : never;

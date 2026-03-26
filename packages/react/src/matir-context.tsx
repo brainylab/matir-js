@@ -1,6 +1,6 @@
 "use client";
 
-import { type MatirCore, matir } from "@matir-js/core";
+import { type InferPermissions, type MatirCore, matir } from "@matir-js/core";
 import {
   createContext,
   useCallback,
@@ -41,7 +41,11 @@ type CurrentRole = {
   description: string | null;
 } | null;
 
-type CurrentPermissions = Record<string, string[]> | null;
+type CurrentPermissions = MatirRegister extends { schema: infer S }
+  ? S extends Schema
+    ? InferPermissions<S>
+    : Record<string, string[]>
+  : Record<string, string[]> | null;
 
 type MatirContextValue = {
   role: CurrentRole;
@@ -112,7 +116,7 @@ export function MatirProvider({
     <MatirContext.Provider
       value={{
         role,
-        permissions,
+        permissions: permissions,
         ability: ability as RegisteredAbility,
         setCurrentRole,
         setCurrentPermissions,

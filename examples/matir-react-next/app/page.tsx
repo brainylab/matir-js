@@ -1,12 +1,12 @@
 "use client";
 
-import { Can, useAbility } from "@matir-js/react";
+import { Can, useAbility, useCurrent } from "@matir-js/react";
 import Image from "next/image";
 
 export default function Home() {
   const { can } = useAbility();
 
-  const isCan = can("order.export");
+  const isCan = can("order");
 
   console.log(isCan);
 

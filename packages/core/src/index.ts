@@ -3,6 +3,8 @@ import { defineSchema } from "./helpers/defineSchema";
 import { diffPermissions } from "./helpers/diffPermissions";
 import { schemaToArray } from "./helpers/schemaToArray";
 
+export type { InferPermissions } from "./types";
+
 const matir = MatirCore as typeof MatirCore & {
   defineSchema: typeof defineSchema;
   schemaToArray: typeof schemaToArray;
