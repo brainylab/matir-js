@@ -5,6 +5,7 @@ import Image from "next/image";
 
 export default function Home() {
   const { can } = useAbility();
+  const { getPermissions } = useCurrent();
 
   const isCan = can("order");
 

@@ -155,3 +155,39 @@ export type InferPermissions<
   >
     ? InferPermissionsMap<TRules, TActions>
     : never;
+
+// Gera os padrões wildcard válidos: "product.*", "order.*" etc
+export type ExtractWildcardSubjects<T extends MatirPermissions<any, any>> = {
+  [K in keyof T]: K extends string ? `${K}.*` : never;
+}[keyof T];
+
+// Dado um padrão "product.*", retorna todos os subjects que começam com "product."
+// incluindo o próprio "product" se existir
+type MatchWildcard<
+  TSubjects extends string,
+  Pattern extends string,
+> = Pattern extends `${infer Prefix}.*`
+  ? TSubjects extends Prefix | `${Prefix}.${string}`
+    ? TSubjects
+    : never
+  : never;
+
+// Retorno do getCurrentPermissions — array de objetos { key, actions }
+export type PermissionEntry<
+  TRules extends MatirPermissions<any, any>,
+  TActions extends ActionsDefinition,
+  S extends ExtractSubjects<TRules>,
+> = {
+  key: S;
+  actions: ExtractActionsFromSubject<TRules, S, TActions>[];
+};
+
+export type ExtractPermissionsByWildcard<
+  TRules extends MatirPermissions<any, any>,
+  TActions extends ActionsDefinition,
+  Pattern extends ExtractWildcardSubjects<TRules>,
+> = PermissionEntry<
+  TRules,
+  TActions,
+  MatchWildcard<ExtractSubjects<TRules>, Pattern>
+>[];

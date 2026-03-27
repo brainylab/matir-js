@@ -1,6 +1,14 @@
 "use client";
 
-import { type InferPermissions, type MatirCore, matir } from "@matir-js/core";
+import {
+  type ExtractActionsFromSubject,
+  type ExtractPermissionsByWildcard,
+  type ExtractSubjects,
+  type ExtractWildcardSubjects,
+  type InferPermissions,
+  type MatirCore,
+  matir,
+} from "@matir-js/core";
 import {
   createContext,
   useCallback,
@@ -22,6 +30,9 @@ type RegisteredSchema = MatirRegister extends { schema: infer S }
     ? S
     : Schema
   : Schema;
+
+type RegisteredRules = RegisteredSchema["rules"];
+type RegisteredActions = RegisteredSchema["actions"];
 
 export type MatirCurrentInput = {
   role?: string;
@@ -53,6 +64,14 @@ type MatirContextValue = {
   ability: RegisteredAbility;
   setCurrentRole: (role: string) => void;
   setCurrentPermissions: (permissions: Record<string, string[]>) => void;
+  getCurrentPermission: <S extends ExtractSubjects<RegisteredRules>>(
+    subject: S,
+  ) =>
+    | ExtractActionsFromSubject<RegisteredRules, S, RegisteredActions>[]
+    | null; // ← reutiliza o type do core
+  getCurrentPermissions: <P extends ExtractWildcardSubjects<RegisteredRules>>(
+    pattern: P,
+  ) => ExtractPermissionsByWildcard<RegisteredRules, RegisteredActions, P>;
   clearAll: () => void;
 };
 
@@ -109,6 +128,20 @@ export function MatirProvider({
     [current],
   );
 
+  const getCurrentPermission = useCallback(
+    <S extends ExtractSubjects<RegisteredRules>>(subject: S) => {
+      return current.getPermission(subject as any) as any;
+    },
+    [current],
+  );
+
+  const getCurrentPermissions = useCallback(
+    <P extends ExtractWildcardSubjects<RegisteredRules>>(pattern: P) => {
+      return current.getPermissions(pattern as any) as any;
+    },
+    [current],
+  );
+
   const clearAll = useCallback(() => {
     current.clear();
     forceUpdate();
@@ -122,6 +155,8 @@ export function MatirProvider({
         ability: ability as RegisteredAbility,
         setCurrentRole,
         setCurrentPermissions,
+        getCurrentPermission,
+        getCurrentPermissions,
         clearAll,
       }}
     >
@@ -139,6 +174,8 @@ export function useCurrent() {
     permissions: ctx.permissions as CurrentPermissions | null,
     setRole: ctx.setCurrentRole,
     setPermissions: ctx.setCurrentPermissions,
+    getPermission: ctx.getCurrentPermission,
+    getPermissions: ctx.getCurrentPermissions,
     clearAll: ctx.clearAll,
   };
 }

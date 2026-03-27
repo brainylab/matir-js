@@ -340,4 +340,169 @@ describe("MatirCore", () => {
       }),
     ).toBe(true);
   });
+
+  describe("getCurrentPermission", () => {
+    const { current } = matir.createSchema({
+      roles: { admin: "admin", manager: "manager" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
+      rules: {
+        product: {
+          roles: ["admin"],
+          actions: ["read"],
+          sub: {
+            list: {
+              roles: ["admin", "manager"],
+              actions: ["read", "create"],
+            },
+            detail: {
+              roles: ["admin"],
+              actions: ["read", "update", "delete"],
+            },
+          },
+        },
+        order: {
+          roles: ["admin"],
+          actions: ["read"],
+          sub: {
+            export: {
+              roles: ["admin"],
+              actions: ["create"],
+            },
+          },
+        },
+      },
+    });
+
+    current.role("admin");
+    current.permissions({
+      product: ["read"],
+      "product.list": ["read", "create"],
+      "product.detail": ["read", "update"],
+      "order.export": ["create"],
+    });
+
+    it("should return the actions for a specific subject", () => {
+      expect(current.getPermission("product")).toEqual(["read"]);
+      expect(current.getPermission("product.list")).toEqual(["read", "create"]);
+      expect(current.getPermission("product.detail")).toEqual([
+        "read",
+        "update",
+      ]);
+      expect(current.getPermission("order.export")).toEqual(["create"]);
+    });
+
+    it("should return null when subject is not in current permissions", () => {
+      expect(current.getPermission("order")).toBeNull();
+    });
+  });
+
+  describe("getCurrentPermissions", () => {
+    const { current } = matir.createSchema({
+      roles: { admin: "admin", manager: "manager" },
+      actions: {
+        create: "create",
+        read: "read",
+        update: "update",
+        delete: "delete",
+      },
+      rules: {
+        product: {
+          roles: ["admin"],
+          actions: ["read"],
+          sub: {
+            list: {
+              roles: ["admin", "manager"],
+              actions: ["read", "create"],
+            },
+            detail: {
+              roles: ["admin"],
+              actions: ["read", "update", "delete"],
+            },
+          },
+        },
+        order: {
+          roles: ["admin"],
+          actions: ["read"],
+          sub: {
+            export: {
+              roles: ["admin"],
+              actions: ["create"],
+            },
+          },
+        },
+      },
+    });
+
+    current.role("admin");
+    current.permissions({
+      product: ["read"],
+      "product.list": ["read", "create"],
+      "product.detail": ["read", "update"],
+      order: ["read"],
+      "order.export": ["create"],
+    });
+
+    it("should return all permissions matching the wildcard prefix", () => {
+      const result = current.getPermissions("product.*");
+
+      expect(result).toHaveLength(3);
+      expect(result).toEqual(
+        expect.arrayContaining([
+          { key: "product", actions: ["read"] },
+          { key: "product.list", actions: ["read", "create"] },
+          { key: "product.detail", actions: ["read", "update"] },
+        ]),
+      );
+    });
+
+    it("should return only the matching prefix for order.*", () => {
+      const result = current.getPermissions("order.*");
+
+      expect(result).toHaveLength(2);
+      expect(result).toEqual(
+        expect.arrayContaining([
+          { key: "order", actions: ["read"] },
+          { key: "order.export", actions: ["create"] },
+        ]),
+      );
+    });
+
+    it("should return empty array when no permissions match the wildcard", () => {
+      const result = current.getPermissions("product.*");
+
+      // remove todas as permissions do product para simular
+      const { current: freshCurrent } = matir.createSchema({
+        roles: { admin: "admin" },
+        actions: { read: "read" },
+        rules: {
+          product: {
+            roles: ["admin"],
+            actions: ["read"],
+            sub: {
+              list: { roles: ["admin"], actions: ["read"] },
+            },
+          },
+        },
+      });
+
+      freshCurrent.role("admin");
+      freshCurrent.permissions({ order: ["read"] }); // só order, sem product
+
+      expect(freshCurrent.getPermissions("product.*")).toEqual([]);
+    });
+
+    it("should not include permissions from other prefixes", () => {
+      const result = current.getPermissions("product.*");
+
+      const keys = result.map((r) => r.key);
+
+      expect(keys).not.toContain("order");
+      expect(keys).not.toContain("order.export");
+    });
+  });
 });

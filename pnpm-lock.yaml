@@ -38,6 +38,9 @@ importers:
 
   examples/matir-react-next:
     dependencies:
+      '@matir-js/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@matir-js/react':
         specifier: workspace:*
         version: link:../../packages/react

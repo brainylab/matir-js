@@ -3,7 +3,9 @@ import type {
   ActionsDefinition,
   ExtractActionsFromSubject,
   ExtractConditionsFromSubject,
+  ExtractPermissionsByWildcard,
   ExtractSubjects,
+  ExtractWildcardSubjects,
   HasConditions,
   MatirConditions,
   MatirCurrentPermissions,
@@ -46,6 +48,26 @@ export class MatirCore<
       value: this.currentRole,
       description: this.currentRole ? this.roles[this.currentRole] : null,
     };
+  }
+
+  getCurrentPermission<S extends ExtractSubjects<TRules>>(
+    subject: S,
+  ): ExtractActionsFromSubject<TRules, S, TActions>[] | null {
+    const permissions = this.currentPermissions[subject as string];
+    if (!permissions) return null;
+    return permissions as ExtractActionsFromSubject<TRules, S, TActions>[];
+  }
+
+  getCurrentPermissions<P extends ExtractWildcardSubjects<TRules>>(
+    pattern: P,
+  ): ExtractPermissionsByWildcard<TRules, TActions, P> {
+    const prefix = (pattern as string).replace(".*", "");
+
+    const entries = Object.entries(this.currentPermissions)
+      .filter(([key]) => key === prefix || key.startsWith(`${prefix}.`))
+      .map(([key, actions]) => ({ key, actions }));
+
+    return entries as ExtractPermissionsByWildcard<TRules, TActions, P>;
   }
 
   getCurrent(): {
@@ -138,8 +160,6 @@ export class MatirCore<
         }
       }
     }
-
-    //  revisar condition
 
     // Se o subject tem conditions no schema, condition é obrigatória
     if (
@@ -255,6 +275,8 @@ export class MatirCore<
       clear: instance.clearCurrent.bind(instance),
       get: instance.getCurrent.bind(instance),
       getRole: instance.getCurrentRole.bind(instance),
+      getPermission: instance.getCurrentPermission.bind(instance),
+      getPermissions: instance.getCurrentPermissions.bind(instance),
     };
 
     return { ability, current };
