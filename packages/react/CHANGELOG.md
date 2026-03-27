@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.2.1
+
+### Patch Changes
+
+- [`f0a5429`](https://github.com/brainylab/matir-js/commit/f0a542915336d6a18c0a7ff3302aff6799b62c85) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - fix: correcão do type ao exportar no hook useCurrent
+
 ## 0.2.0
 
 ### Minor Changes
