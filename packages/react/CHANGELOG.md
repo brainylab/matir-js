@@ -1,5 +1,14 @@
 # @matir-js/react
 
+## 0.6.0
+
+### Minor Changes
+
+- [`7830ded`](https://github.com/brainylab/matir-js/commit/7830ded642765c587a9dfcf77b5a5976b37f93d3) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Update React testing setup and dependencies
+
+  Add testing libraries and jsdom, configure Vitest with jsdom environment,
+  and rename parameter for clarity in defineCanNav function.
+
 ## 0.5.0
 
 ### Minor Changes
