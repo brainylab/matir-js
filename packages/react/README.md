@@ -153,12 +153,12 @@ const productAll = getPermissions("product.*")
 
 ### `useAbility`
 
-Retorna o objeto `ability` para verificações imperativas.
+Retorna o objeto `ability` para verificações imperativas baseadas no schema.
 
 ```ts
 const ability = useAbility()
 
-ability.can("product", "create")   // → boolean
+ability.can("product", "create")     // → boolean
 ability.cannot("settings", "update") // → boolean
 ```
 
@@ -209,84 +209,112 @@ import { Can } from "@matir-js/react"
 
 ### `defineNav`
 
-Define a estrutura de navegação tipada com o schema. O campo `permissions` é opcional — itens sem ele são sempre visíveis.
+Define a estrutura de navegação tipada com o schema. O campo `permissions` é opcional por item.
 
 ```ts
 import { defineNav } from "@matir-js/react"
 
 type NavItem =
-  | { type: "title"; label: string }
-  | { type: "link";  label: string; href: string }
-  | { type: "group"; label: string }
+  | { type: "title"; title: string }
+  | { type: "link";  title: string; path: string; alias?: string }
+  | { type: "collapsible"; title: string }
 
 export const navGroups = defineNav<NavItem>([
   {
     type:  "title",
-    label: "Geral",
+    title: "Geral",
+    items: [
+      {
+        // sem permissions → sempre visível
+        type:  "link",
+        title: "Dashboard",
+        path:  "/dashboard",
+      },
+    ],
   },
   {
-    type:        "link",
-    label:       "Dashboard",
-    href:        "/dashboard",
-    permissions: { order: "read" },
-  },
-  {
-    type:        "group",
-    label:       "Catálogo",
-    permissions: { product: "read" },
+    type:  "title",
+    title: "Vendas",
     items: [
       {
         type:        "link",
-        label:       "Produtos",
-        href:        "/products",
-        permissions: { product: "read" },
+        title:       "Orçamentos",
+        path:        "/sales/budgets",
+        permissions: { "sales.budget": "view" }, // visível só se tiver permissão
       },
+    ],
+  },
+  {
+    type:  "title",
+    title: "Catálogo",
+    items: [
       {
-        type:        "link",
-        label:       "Exportar",
-        href:        "/products/export",
-        permissions: { "product.export": "create" },
+        type:        "collapsible",
+        title:       "Produtos",
+        permissions: { product: "read" },
+        items: [
+          {
+            type:        "link",
+            title:       "Exportar",
+            path:        "/products/export",
+            permissions: { "product.export": "create" },
+          },
+        ],
       },
     ],
   },
 ])
 ```
 
-O TypeScript vai autocompletar os subjects (`"product"`, `"product.export"`, `"order"`, ...) e as actions disponíveis para cada um.
+**Comportamento do `permissions`:**
+
+| Situação | Resultado |
+|---|---|
+| `permissions` ausente ou vazio | Sempre visível |
+| `permissions` preenchido + usuário tem a permissão | Visível |
+| `permissions` preenchido + usuário não tem a permissão | Oculto |
+
+O TypeScript autocompleta os subjects (`"product"`, `"product.export"`, `"sales.budget"`, ...) e as actions disponíveis para cada um a partir do schema registrado.
 
 ---
 
 ### `defineCanNav`
 
-Filtra o array retornado pelo `defineNav`, mantendo apenas os itens que o usuário tem permissão. A filtragem é **recursiva** — items aninhados também são filtrados.
-
-**Regras:**
-- Sem `permissions` → sempre visível
-- Com `permissions` → pelo menos **uma** entrada deve passar no `can` (lógica OR)
-- O pai é mantido mesmo que todos os filhos sejam removidos
+Função pura que filtra o array do `defineNav` pelas permissões do usuário. Útil quando você já tem o objeto `permissions` em mãos (ex: SSR).
 
 ```ts
-import { useAbility, defineCanNav } from "@matir-js/react"
-import { useMemo } from "react"
+import { defineCanNav } from "@matir-js/react"
+import { navGroups } from "@/config/nav"
+
+const filtered = defineCanNav(navGroups, user.permissions)
+```
+
+A filtragem é **recursiva** — `items` aninhados também são filtrados. O pai é mantido mesmo que todos os filhos sejam removidos.
+
+---
+
+### `useCanNav`
+
+Hook que combina `defineCanNav` com `useCurrent` e `useMemo`. Use quando precisar filtrar a nav de forma reativa no cliente.
+
+```tsx
+import { useCanNav } from "@matir-js/react"
 import { navGroups } from "@/config/nav"
 
 function Sidebar() {
-  const ability = useAbility()
-
-  const nav = useMemo(
-    () => defineCanNav(navGroups, ability),
-    [ability],
-  )
+  const nav = useCanNav(navGroups)
 
   return (
     <nav>
       {nav.map((item) => (
-        <NavItem key={item.label} item={item} />
+        <NavItem key={item.title} item={item} />
       ))}
     </nav>
   )
 }
 ```
+
+Recalcula automaticamente sempre que as permissões do usuário mudam. Não causa re-renders desnecessários por usar `useMemo` internamente.
 
 ---
 
@@ -317,9 +345,10 @@ type UserPermissions = InferPermissions<typeof matirSchema>
 |---|---|---|
 | `MatirProvider` | Component | Provider que inicializa o matir com o schema |
 | `useCurrent` | Hook | Lê/define role e permissões do usuário atual |
-| `useAbility` | Hook | Retorna `ability.can` e `ability.cannot` |
+| `useAbility` | Hook | Retorna `ability.can` e `ability.cannot` baseado no schema |
 | `Can` | Component | Renderização condicional por permissão |
-| `defineNav` | Helper | Define estrutura de navegação tipada |
-| `defineCanNav` | Helper | Filtra nav pelo que o usuário tem acesso |
+| `defineNav` | Helper | Define estrutura de navegação tipada pelo schema |
+| `defineCanNav` | Helper | Função pura que filtra nav pelas permissões do usuário |
+| `useCanNav` | Hook | Filtra nav reativamente usando `useCurrent` + `useMemo` |
 | `MatirRegister` | Interface | Augmentation para registrar o schema globalmente |
 `

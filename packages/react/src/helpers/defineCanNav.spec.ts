@@ -1,60 +1,54 @@
-import { describe, expect, it, vi } from "vitest";
-
-import type { RegisteredAbility } from "../matir-context";
+import { describe, expect, it } from "vitest";
 
 import { defineCanNav } from "./defineCanNav";
 
-function mockAbility(
-  canReturn: boolean | ((subject: string, action: string) => boolean),
-): RegisteredAbility {
-  return {
-    can: vi.fn((subject: string, action: string) =>
-      typeof canReturn === "function" ? canReturn(subject, action) : canReturn,
-    ),
-    cannot: vi.fn(),
-  } as unknown as RegisteredAbility;
-}
-
 describe("defineCanNav", () => {
   it("should return all items when all permissions pass", () => {
-    const ability = mockAbility(true);
-
     const result = defineCanNav(
       [
         { permissions: { dashboard: "view" } },
         { permissions: { product: "read" } },
       ],
-      ability,
+      {
+        dashboard: ["view"],
+        product: ["read"],
+      },
     );
 
     expect(result).toHaveLength(2);
   });
 
   it("should filter out items when permission is denied", () => {
-    const ability = mockAbility(false);
-
     const result = defineCanNav(
       [
         { permissions: { dashboard: "view" } },
         { permissions: { product: "read" } },
       ],
-      ability,
+      {},
     );
 
     expect(result).toHaveLength(0);
   });
 
   it("should always include items without permissions", () => {
-    const ability = mockAbility(false);
-
-    const result = defineCanNav([{ permissions: {} }, {}], ability);
+    const result = defineCanNav([{ permissions: {} }, {}], null);
 
     expect(result).toHaveLength(2);
   });
 
-  it("should pass if at least one permission entry passes (OR logic)", () => {
-    const ability = mockAbility((subject) => subject === "order");
+  it("should return all items when permissions is null and no nav permissions defined", () => {
+    const result = defineCanNav([{}, {}], null);
 
+    expect(result).toHaveLength(2);
+  });
+
+  it("should filter all items when permissions is null and nav has permissions", () => {
+    const result = defineCanNav([{ permissions: { dashboard: "view" } }], null);
+
+    expect(result).toHaveLength(0);
+  });
+
+  it("should pass if at least one permission entry passes (OR logic)", () => {
     const result = defineCanNav(
       [
         {
@@ -64,15 +58,15 @@ describe("defineCanNav", () => {
           },
         },
       ],
-      ability,
+      {
+        order: ["view"],
+      },
     );
 
     expect(result).toHaveLength(1);
   });
 
   it("should filter nested items recursively", () => {
-    const ability = mockAbility((subject) => subject === "dashboard");
-
     const result = defineCanNav(
       [
         {
@@ -83,7 +77,9 @@ describe("defineCanNav", () => {
           ],
         },
       ],
-      ability,
+      {
+        dashboard: ["view"],
+      },
     );
 
     expect(result).toHaveLength(1);
@@ -92,8 +88,6 @@ describe("defineCanNav", () => {
   });
 
   it("should keep parent even when all children are filtered", () => {
-    const ability = mockAbility((subject) => subject === "dashboard");
-
     const result = defineCanNav(
       [
         {
@@ -101,7 +95,9 @@ describe("defineCanNav", () => {
           items: [{ permissions: { product: "read" } }],
         },
       ],
-      ability,
+      {
+        dashboard: ["view"],
+      },
     );
 
     expect(result).toHaveLength(1);
@@ -109,16 +105,12 @@ describe("defineCanNav", () => {
   });
 
   it("should return empty array when input is empty", () => {
-    const ability = mockAbility(true);
-
-    const result = defineCanNav([], ability);
+    const result = defineCanNav([], { dashboard: ["view"] });
 
     expect(result).toEqual([]);
   });
 
   it("should preserve extra fields on filtered items", () => {
-    const ability = mockAbility(true);
-
     const result = defineCanNav<{ href: string; label: string }>(
       [
         {
@@ -127,10 +119,31 @@ describe("defineCanNav", () => {
           label: "Dashboard",
         },
       ],
-      ability,
+      {
+        dashboard: ["view"],
+      },
     );
 
     expect(result[0].href).toBe("/dashboard");
     expect(result[0].label).toBe("Dashboard");
+  });
+
+  it("should check action correctly within subject permissions", () => {
+    const result = defineCanNav([{ permissions: { "sales.budget": "view" } }], {
+      "sales.budget": ["view", "create", "edit"],
+    });
+
+    expect(result).toHaveLength(1);
+  });
+
+  it("should filter when action is not in subject permissions", () => {
+    const result = defineCanNav(
+      [{ permissions: { "sales.budget": "delete" } }],
+      {
+        "sales.budget": ["view", "create", "edit"],
+      },
+    );
+
+    expect(result).toHaveLength(0);
   });
 });
