@@ -24,10 +24,14 @@ export type NavPermissions = {
   >;
 };
 
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export type NavNode<TExtra extends object = object> = {
-  permissions: NavPermissions;
+  permissions?: NavPermissions;
   items?: NavNode<TExtra>[];
-} & Omit<TExtra, "permissions" | "items">;
+} & DistributiveOmit<TExtra, "permissions" | "items">;
 
 export function defineNav<TExtra extends object = object>(
   items: NavNode<TExtra>[],
