@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.4.1
+
+### Patch Changes
+
+- [`c04443e`](https://github.com/brainylab/matir-js/commit/c04443eeff5851415b4c7e90131de5ef9428a765) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - ajustes nos types generics passados para o defineNav, não estava funcionando types condicionais
+
 ## 0.4.0
 
 ### Minor Changes
