@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.6.1
+
+### Patch Changes
+
+- [`b849a09`](https://github.com/brainylab/matir-js/commit/b849a0916f9c5082807024f2e6ff5aa577a55d77) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - ajustes ao exportar os hooks que nãoe stavam sendo exportados corretamente
+
 ## 0.6.0
 
 ### Minor Changes
