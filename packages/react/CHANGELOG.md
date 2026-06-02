@@ -1,5 +1,16 @@
 # @matir-js/react
 
+## 0.3.0
+
+### Minor Changes
+
+- [`b5c90b7`](https://github.com/brainylab/matir-js/commit/b5c90b7290c770a781820c744116e51fdef1180f) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - feat: adicionado duas novas helpers para obter as permissoes no core e no hooks getCurrent
+
+### Patch Changes
+
+- Updated dependencies [[`b5c90b7`](https://github.com/brainylab/matir-js/commit/b5c90b7290c770a781820c744116e51fdef1180f)]:
+  - @matir-js/core@0.8.0
+
 ## 0.2.1
 
 ### Patch Changes
