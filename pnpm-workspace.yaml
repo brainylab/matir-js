@@ -14,3 +14,5 @@ minimumReleaseAgeExclude:
   - "@vitest/spy@4.1.8"
   - "@vitest/utils@4.1.8"
   - vitest@4.1.8
+  - '@vitest/coverage-v8@4.1.8'
+  - '@vitest/ui@4.1.8'

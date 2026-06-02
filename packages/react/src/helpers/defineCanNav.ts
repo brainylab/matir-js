@@ -13,10 +13,10 @@ function hasPermission(
 }
 
 export function defineCanNav<TExtra extends object = object>(
-  items: NavNode<TExtra>[],
+  nav: NavNode<TExtra>[],
   ability: RegisteredAbility,
 ): NavNode<TExtra>[] {
-  return items.reduce<NavNode<TExtra>[]>((acc, item) => {
+  return nav.reduce<NavNode<TExtra>[]>((acc, item) => {
     if (!hasPermission(item.permissions, ability)) return acc;
 
     acc.push(
