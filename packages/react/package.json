@@ -14,7 +14,10 @@
     "changeset": "changeset",
     "prepack": "clean-package",
     "postpack": "clean-package restore",
-    "build": "tsdown"
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui --coverage"
   },
   "publishConfig": {
     "access": "public"
