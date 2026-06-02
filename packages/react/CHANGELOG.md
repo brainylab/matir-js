@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.5.0
+
+### Minor Changes
+
+- [`a58b09e`](https://github.com/brainylab/matir-js/commit/a58b09e291cac1dbbb611e2fe32bd639a823eac7) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - feat: criado novo helper defineCanNav que criar um objeot para nav que já faz a validação pelas informações fornecidas no schema do nav
+
 ## 0.4.1
 
 ### Patch Changes
