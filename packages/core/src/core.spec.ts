@@ -473,7 +473,7 @@ describe("MatirCore", () => {
     });
 
     it("should return empty array when no permissions match the wildcard", () => {
-      const result = current.getPermissions("product.*");
+      current.getPermissions("product.*");
 
       // remove todas as permissions do product para simular
       const { current: freshCurrent } = matir.createSchema({

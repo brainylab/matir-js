@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import type { MatirSchemaDefinition } from "./defineSchema";
-
 import { defineSchema } from "./defineSchema";
 
 describe("defineSchema", () => {
