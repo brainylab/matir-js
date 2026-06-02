@@ -1,5 +1,16 @@
 # @matir-js/react
 
+## 0.4.0
+
+### Minor Changes
+
+- [`0c6692f`](https://github.com/brainylab/matir-js/commit/0c6692f1ab6b640f57cd49c1bbd7783e54cd833c) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - adicionado novo helper para definição do esqueleto de um nav para projetos react
+
+### Patch Changes
+
+- Updated dependencies [[`0f5ad93`](https://github.com/brainylab/matir-js/commit/0f5ad93c54aa2b628a07d9b2cb9fa1164792f737)]:
+  - @matir-js/core@0.8.1
+
 ## 0.3.0
 
 ### Minor Changes

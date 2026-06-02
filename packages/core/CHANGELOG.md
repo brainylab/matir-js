@@ -1,5 +1,11 @@
 # @matir-js/core
 
+## 0.8.1
+
+### Patch Changes
+
+- [`0f5ad93`](https://github.com/brainylab/matir-js/commit/0f5ad93c54aa2b628a07d9b2cb9fa1164792f737) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - ajustes nos testes do core
+
 ## 0.8.0
 
 ### Minor Changes
