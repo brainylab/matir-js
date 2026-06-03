@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.6.2
+
+### Patch Changes
+
+- [`545b8f6`](https://github.com/brainylab/matir-js/commit/545b8f61736df288440dfa185daa59a78029468f) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Filter nav using permissions map and useCurrent
+
 ## 0.6.1
 
 ### Patch Changes
