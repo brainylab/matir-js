@@ -1,8 +1,4 @@
-import type {
-  ExtractActionsFromSubject,
-  ExtractSubjects,
-  matir,
-} from "@matir-js/core";
+import type { ExtractSubjects, MatirPermissions, matir } from "@matir-js/core";
 import type { MatirRegister } from "../matir-context";
 
 type Schema = ReturnType<typeof matir.defineSchema>;
@@ -13,15 +9,41 @@ type RegisteredSchema = MatirRegister extends { schema: infer S }
     : Schema
   : Schema;
 
-type RegisteredActions = RegisteredSchema["actions"];
 type RegisteredRules = RegisteredSchema["rules"];
 
+type GetSubjectByPath<
+  T extends MatirPermissions<any, any>,
+  Path extends string,
+> = Path extends `${infer First}.${infer Rest}`
+  ? First extends keyof T
+    ? T[First] extends { sub: infer Sub }
+      ? Sub extends MatirPermissions<any, any>
+        ? GetSubjectByPath<Sub, Rest>
+        : never
+      : never
+    : never
+  : Path extends keyof T
+    ? T[Path]
+    : never;
+
+type ExtractNavAction<
+  TRules extends MatirPermissions<any, any>,
+  Subject extends string,
+> =
+  GetSubjectByPath<TRules, Subject> extends { actions: infer Actions }
+    ? Actions extends readonly (infer Action)[]
+      ? Action
+      : never
+    : never; // sem actions → never
+
 export type NavPermissions = {
-  [S in ExtractSubjects<RegisteredRules>]?: ExtractActionsFromSubject<
+  // key remapping: subjects com never são removidos do tipo completamente
+  [S in ExtractSubjects<RegisteredRules> as ExtractNavAction<
     RegisteredRules,
-    S,
-    RegisteredActions
-  >;
+    S
+  > extends never
+    ? never
+    : S]?: ExtractNavAction<RegisteredRules, S>;
 };
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
