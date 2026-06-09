@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.7.1
+
+### Patch Changes
+
+- [`7ea0fbb`](https://github.com/brainylab/matir-js/commit/7ea0fbbaaae287c220a0573036de537f4b2d9bfd) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - alterado a forma como o useManipulation recebe as permissões, agora sendo passado por parametro
+
 ## 0.7.0
 
 ### Minor Changes
