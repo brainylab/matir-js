@@ -1,8 +1,8 @@
 "use client";
 
-import type { RegisteredAbility } from "./matir-context";
+import type { RegisteredAbility } from "./matirContext";
 
-import { useAbility } from "./matir-context";
+import { useAbility } from "./matirContext";
 
 type CanSubject = Parameters<RegisteredAbility["can"]>[0];
 

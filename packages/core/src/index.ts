@@ -3,6 +3,7 @@ import { defineSchema } from "./helpers/defineSchema";
 import { diffPermissions } from "./helpers/diffPermissions";
 import { schemaToArray } from "./helpers/schemaToArray";
 
+export type * from "./helpers/schemaToArray";
 export type * from "./types";
 
 const matir = MatirCore as typeof MatirCore & {
@@ -15,4 +16,4 @@ matir.defineSchema = defineSchema;
 matir.schemaToArray = schemaToArray;
 matir.diffPermissions = diffPermissions;
 
-export { matir, defineSchema, schemaToArray, diffPermissions, MatirCore };
+export { defineSchema, diffPermissions, MatirCore, matir, schemaToArray };

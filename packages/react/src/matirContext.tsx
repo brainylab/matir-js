@@ -73,9 +73,10 @@ type MatirContextValue = {
     pattern: P,
   ) => ExtractPermissionsByWildcard<RegisteredRules, RegisteredActions, P>;
   clearAll: () => void;
+  schema: Schema;
 };
 
-const MatirContext = createContext<MatirContextValue | null>(null);
+export const MatirContext = createContext<MatirContextValue | null>(null);
 
 export function MatirProvider({
   children,
@@ -158,6 +159,7 @@ export function MatirProvider({
         getCurrentPermission,
         getCurrentPermissions,
         clearAll,
+        schema,
       }}
     >
       {children}

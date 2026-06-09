@@ -1,11 +1,11 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("../matir-context", () => ({
+vi.mock("../matirContext", () => ({
   useCurrent: vi.fn(),
 }));
 
-import { useCurrent } from "../matir-context";
+import { useCurrent } from "../matirContext";
 import { useCanNav } from "./useCanNav";
 
 describe("useCanNav", () => {

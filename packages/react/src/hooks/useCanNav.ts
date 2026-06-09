@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import type { NavNode } from "../helpers/defineNav";
 
 import { defineCanNav } from "../helpers/defineCanNav";
-import { useCurrent } from "../matir-context";
+import { useCurrent } from "../matirContext";
 
 export function useCanNav<TExtra extends object = object>(
   nav: NavNode<TExtra>[],

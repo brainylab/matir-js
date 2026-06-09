@@ -1,5 +1,5 @@
 import type { ExtractSubjects, MatirPermissions, matir } from "@matir-js/core";
-import type { MatirRegister } from "../matir-context";
+import type { MatirRegister } from "../matirContext";
 
 type Schema = ReturnType<typeof matir.defineSchema>;
 
