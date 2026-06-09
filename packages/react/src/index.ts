@@ -3,5 +3,7 @@ export { matir } from "@matir-js/core";
 export * from "./can";
 export * from "./helpers/defineCanNav";
 export * from "./helpers/defineNav";
+export * from "./hooks/useArrayList";
 export * from "./hooks/useCanNav";
+export * from "./hooks/useManipulation";
 export * from "./matirContext";
