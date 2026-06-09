@@ -111,7 +111,11 @@ function buildSubjectPermissions(
   return {};
 }
 
-export function useManipulation() {
+type UseManipulationReturn = {
+  permissions?: Record<string, string[]>;
+};
+
+export function useManipulation(props?: UseManipulationReturn) {
   const ctx = useContext(MatirContext);
 
   if (!ctx) {
@@ -121,7 +125,7 @@ export function useManipulation() {
   const { rules } = useArrayList();
 
   const [state, setState] = useState<RuleWithActive[]>(() =>
-    buildState(rules, ctx.permissions ?? {}),
+    buildState(rules, props?.permissions ?? {}),
   );
 
   function handleToggleAction(path: string, actionId: string, active: boolean) {

@@ -77,9 +77,15 @@ describe("useManipulation", () => {
         actions: [],
       });
 
-      const { result } = renderHook(() => useManipulation(), {
-        wrapper: createWrapper({ products: ["create", "read"] }),
-      });
+      const { result } = renderHook(
+        () =>
+          useManipulation({
+            permissions: { products: ["create", "read"] },
+          }),
+        {
+          wrapper: createWrapper({ products: ["create", "read"] }),
+        },
+      );
 
       const actions = result.current.rules[0].actions!;
       expect(actions.find((a) => a.id === "create")?.active).toBe(true);
@@ -138,9 +144,15 @@ describe("useManipulation", () => {
         actions: [],
       });
 
-      const { result } = renderHook(() => useManipulation(), {
-        wrapper: createWrapper({ "products.reference": ["create"] }),
-      });
+      const { result } = renderHook(
+        () =>
+          useManipulation({
+            permissions: { "products.reference": ["create"] },
+          }),
+        {
+          wrapper: createWrapper({ "products.reference": ["create"] }),
+        },
+      );
 
       const subActions = result.current.rules[0].sub![0].actions!;
       expect(subActions.find((a) => a.id === "create")?.active).toBe(true);
@@ -156,9 +168,12 @@ describe("useManipulation", () => {
         actions: [],
       });
 
-      const { result } = renderHook(() => useManipulation(), {
-        wrapper: createWrapper({}),
-      });
+      const { result } = renderHook(
+        () => useManipulation({ permissions: {} }),
+        {
+          wrapper: createWrapper({}),
+        },
+      );
 
       act(() => {
         result.current.handleToggleAction("products", "create", true);
@@ -176,9 +191,15 @@ describe("useManipulation", () => {
         actions: [],
       });
 
-      const { result } = renderHook(() => useManipulation(), {
-        wrapper: createWrapper({ products: ["read"] }),
-      });
+      const { result } = renderHook(
+        () =>
+          useManipulation({
+            permissions: { products: ["read"] },
+          }),
+        {
+          wrapper: createWrapper({ products: ["read"] }),
+        },
+      );
 
       let returned: Record<string, string[]> = {};
       act(() => {
