@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.7.2
+
+### Patch Changes
+
+- [`39dd39b`](https://github.com/brainylab/matir-js/commit/39dd39b03f6a50355f4066504ae6d046b0d23865) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - exportado os novos hooks
+
 ## 0.7.1
 
 ### Patch Changes
