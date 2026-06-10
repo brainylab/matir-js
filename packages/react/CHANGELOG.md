@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.7.3
+
+### Patch Changes
+
+- [`bc4dcb3`](https://github.com/brainylab/matir-js/commit/bc4dcb316a1a50c0921ddf9ce82b9722b0c3b882) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - correção do type ao exportar o useArrayList
+
 ## 0.7.2
 
 ### Patch Changes
