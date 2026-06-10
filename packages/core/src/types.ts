@@ -78,11 +78,12 @@ export type ExtractActionsFromSubject<
   T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
   TActions extends ActionsDefinition,
-> = GetSubjectByPath<T, Subject> extends { actions: infer Actions }
-  ? Actions extends readonly (infer Action)[]
-    ? Action
-    : never
-  : keyof TActions;
+> =
+  GetSubjectByPath<T, Subject> extends { actions: infer Actions }
+    ? Actions extends readonly (infer Action)[]
+      ? Action
+      : never
+    : keyof TActions;
 
 // Normaliza tipos literais para seus tipos base
 // true | false → boolean
@@ -105,30 +106,35 @@ type NormalizeConditions<T> = {
 export type HasConditions<
   T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
-> = GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
-  ? Conditions extends Record<string, MatirConditions>
-    ? true
-    : false
-  : false;
+> =
+  GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
+    ? Conditions extends Record<string, MatirConditions>
+      ? true
+      : false
+    : false;
 
 // Extrai as conditions de um subject específico (com tipos normalizados)
 export type ExtractConditionsFromSubject<
   T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
-> = GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
-  ? Conditions extends Record<string, MatirConditions>
-    ? NormalizeConditions<Conditions>
-    : never
-  : never;
+> =
+  GetSubjectByPath<T, Subject> extends { conditions: infer Conditions }
+    ? Conditions extends Record<string, MatirConditions>
+      ? NormalizeConditions<Conditions>
+      : never
+    : never;
 
 // Tipo para o parâmetro condition baseado no schema
 export type ExtractConditionType<
   T extends MatirPermissions<any, any>,
   Subject extends ExtractSubjects<T>,
   TContext = unknown,
-> = HasConditions<T, Subject> extends true
-  ? ExtractConditionsFromSubject<T, Subject> | ((context: TContext) => boolean)
-  : MatirCondition<TContext>;
+> =
+  HasConditions<T, Subject> extends true
+    ?
+        | ExtractConditionsFromSubject<T, Subject>
+        | ((context: TContext) => boolean)
+    : MatirCondition<TContext>;
 
 export type InferPermissionsMap<
   TRules extends MatirPermissions<any, any>,
