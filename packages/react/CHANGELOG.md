@@ -1,5 +1,14 @@
 # @matir-js/react
 
+## 0.7.4
+
+### Patch Changes
+
+- [`37218f2`](https://github.com/brainylab/matir-js/commit/37218f211138200370b28c4f3d9df8b3a2a79bc1) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - ajustes dos types do projeto
+
+- Updated dependencies [[`37218f2`](https://github.com/brainylab/matir-js/commit/37218f211138200370b28c4f3d9df8b3a2a79bc1)]:
+  - @matir-js/core@0.8.2
+
 ## 0.7.3
 
 ### Patch Changes
