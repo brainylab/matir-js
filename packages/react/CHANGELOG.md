@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.7.5
+
+### Patch Changes
+
+- [`b50fb07`](https://github.com/brainylab/matir-js/commit/b50fb0718943ab221f100607bb53c7a0bacdbd1f) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Adicionar efeito para sincronizar estado com permissões
+
 ## 0.7.4
 
 ### Patch Changes
