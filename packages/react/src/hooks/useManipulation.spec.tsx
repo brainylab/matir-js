@@ -160,7 +160,7 @@ describe("useManipulation", () => {
     });
   });
 
-  describe("handleToggleAction", () => {
+  describe("toggleAction", () => {
     it("should update the action active state", () => {
       vi.mocked(useArrayList).mockReturnValue({
         rules: mockRules,
@@ -176,7 +176,7 @@ describe("useManipulation", () => {
       );
 
       act(() => {
-        result.current.handleToggleAction("products", "create", true);
+        result.current.toggleAction("products", "create", true);
       });
 
       expect(
@@ -203,11 +203,7 @@ describe("useManipulation", () => {
 
       let returned: Record<string, string[]> = {};
       act(() => {
-        returned = result.current.handleToggleAction(
-          "products",
-          "create",
-          true,
-        );
+        returned = result.current.toggleAction("products", "create", true);
       });
 
       expect(returned).toEqual({ products: ["create", "read"] });
@@ -226,11 +222,7 @@ describe("useManipulation", () => {
 
       let returned: Record<string, string[]> = {};
       act(() => {
-        returned = result.current.handleToggleAction(
-          "invalid.path",
-          "create",
-          true,
-        );
+        returned = result.current.toggleAction("invalid.path", "create", true);
       });
 
       expect(returned).toEqual({});
@@ -249,7 +241,7 @@ describe("useManipulation", () => {
 
       let returned: Record<string, string[]> = {};
       act(() => {
-        returned = result.current.handleToggleAction(
+        returned = result.current.toggleAction(
           "products.reference",
           "create",
           true,
@@ -262,7 +254,7 @@ describe("useManipulation", () => {
     });
   });
 
-  describe("handleSelectAll", () => {
+  describe("selectAll", () => {
     it("should set all actions to active", () => {
       vi.mocked(useArrayList).mockReturnValue({
         rules: mockRules,
@@ -275,7 +267,7 @@ describe("useManipulation", () => {
       });
 
       act(() => {
-        result.current.handleSelectAll("products");
+        result.current.selectAll("products");
       });
 
       expect(result.current.rules[0].actions!.every((a) => a.active)).toBe(
@@ -296,14 +288,14 @@ describe("useManipulation", () => {
 
       let returned: Record<string, string[]> = {};
       act(() => {
-        returned = result.current.handleSelectAll("products");
+        returned = result.current.selectAll("products");
       });
 
       expect(returned).toEqual({ products: ["create", "read", "update"] });
     });
   });
 
-  describe("handleDeselectAll", () => {
+  describe("deselectAll", () => {
     it("should set all actions to inactive", () => {
       vi.mocked(useArrayList).mockReturnValue({
         rules: mockRules,
@@ -316,7 +308,7 @@ describe("useManipulation", () => {
       });
 
       act(() => {
-        result.current.handleDeselectAll("products");
+        result.current.deselectAll("products");
       });
 
       expect(result.current.rules[0].actions!.every((a) => !a.active)).toBe(
@@ -337,7 +329,7 @@ describe("useManipulation", () => {
 
       let returned: Record<string, string[]> = {};
       act(() => {
-        returned = result.current.handleDeselectAll("products");
+        returned = result.current.deselectAll("products");
       });
 
       expect(returned).toEqual({ products: [] });

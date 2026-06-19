@@ -133,19 +133,19 @@ export function useManipulation(props?: UseManipulationReturn) {
     setState(buildState(rules, props?.permissions ?? {}));
   }, [JSON.stringify(props?.permissions)]);
 
-  function handleToggleAction(path: string, actionId: string, active: boolean) {
+  function toggleAction(path: string, actionId: string, active: boolean) {
     const newState = setActionActive(state, path, actionId, active);
     setState(newState);
     return buildSubjectPermissions(newState, path);
   }
 
-  function handleSelectAll(path: string) {
+  function selectAll(path: string) {
     const newState = setAllActionsActive(state, path, true);
     setState(newState);
     return buildSubjectPermissions(newState, path);
   }
 
-  function handleDeselectAll(path: string) {
+  function deselectAll(path: string) {
     const newState = setAllActionsActive(state, path, false);
     setState(newState);
     return buildSubjectPermissions(newState, path);
@@ -153,8 +153,8 @@ export function useManipulation(props?: UseManipulationReturn) {
 
   return {
     rules: state,
-    handleToggleAction,
-    handleSelectAll,
-    handleDeselectAll,
+    toggleAction,
+    selectAll,
+    deselectAll,
   };
 }
