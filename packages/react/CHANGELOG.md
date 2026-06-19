@@ -1,5 +1,11 @@
 # @matir-js/react
 
+## 0.7.6
+
+### Patch Changes
+
+- [`e7ee4c8`](https://github.com/brainylab/matir-js/commit/e7ee4c8341a581f6b5a2c638a436df6463c6f306) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Renomear métodos removendo prefixo "handle"
+
 ## 0.7.5
 
 ### Patch Changes
