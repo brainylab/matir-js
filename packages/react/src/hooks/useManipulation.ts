@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import type {
   ActionArrayItem,
@@ -127,6 +127,10 @@ export function useManipulation(props?: UseManipulationReturn) {
   const [state, setState] = useState<RuleWithActive[]>(() =>
     buildState(rules, props?.permissions ?? {}),
   );
+
+  useEffect(() => {
+    setState(buildState(rules, props?.permissions ?? {}));
+  }, [props?.permissions, rules]);
 
   function handleToggleAction(path: string, actionId: string, active: boolean) {
     const newState = setActionActive(state, path, actionId, active);
