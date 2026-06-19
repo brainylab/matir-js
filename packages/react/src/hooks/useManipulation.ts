@@ -128,9 +128,10 @@ export function useManipulation(props?: UseManipulationReturn) {
     buildState(rules, props?.permissions ?? {}),
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <false positive>
   useEffect(() => {
     setState(buildState(rules, props?.permissions ?? {}));
-  }, [props?.permissions, rules]);
+  }, [JSON.stringify(props?.permissions)]);
 
   function handleToggleAction(path: string, actionId: string, active: boolean) {
     const newState = setActionActive(state, path, actionId, active);
