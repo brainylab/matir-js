@@ -1,5 +1,13 @@
 # @matir-js/react
 
+## 0.8.0
+
+### Minor Changes
+
+- [`22039a7`](https://github.com/brainylab/matir-js/commit/22039a72068ee887d89ab41d5f232047c3d69805) Thanks [@andrefelipeschulle](https://github.com/andrefelipeschulle)! - Adicionar suporte a validação de roles em navegação
+  
+  Add role-based access control to nav filtering logic. Implements hasRole and hasAccess functions to validate both permissions and roles with AND logic when both are present. Updates tests and hooks to support user role checking across navigation items and nested structures.
+
 ## 0.7.6
 
 ### Patch Changes
