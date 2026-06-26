@@ -52,8 +52,9 @@ type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
 
 export type NavNode<TExtra extends object = object> = {
   permissions?: NavPermissions;
+  role?: string[];
   items?: NavNode<TExtra>[];
-} & DistributiveOmit<TExtra, "permissions" | "items">;
+} & DistributiveOmit<TExtra, "permissions" | "items" | "role">;
 
 export function defineNav<TExtra extends object = object>(
   items: NavNode<TExtra>[],

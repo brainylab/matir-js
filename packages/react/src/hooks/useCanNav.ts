@@ -8,10 +8,15 @@ import { useCurrent } from "../matirContext";
 export function useCanNav<TExtra extends object = object>(
   nav: NavNode<TExtra>[],
 ): NavNode<TExtra>[] {
-  const { permissions } = useCurrent();
+  const { permissions, role } = useCurrent();
 
   return useMemo(
-    () => defineCanNav(nav, permissions as Record<string, string[]> | null),
-    [nav, permissions],
+    () =>
+      defineCanNav(
+        nav,
+        permissions as Record<string, string[]> | null,
+        role?.value as string | null,
+      ),
+    [nav, permissions, role],
   );
 }
