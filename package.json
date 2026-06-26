@@ -16,10 +16,12 @@
     "@changesets/cli": "2.29.8",
     "@changesets/get-release-plan": "4.0.14",
     "@changesets/types": "6.1.0",
+    "@vitest/coverage-v8": "4.1.9",
+    "@vitest/ui": "4.1.9",
     "tsdown": "0.22.2",
     "turbo": "2.9.16",
-    "typescript": "6.0.2",
-    "vitest": "4.1.8"
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
   },
   "engines": {
     "node": ">=22"
